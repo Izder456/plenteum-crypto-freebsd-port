@@ -1,4 +1,4 @@
-![image](https://user-images.githubusercontent.com/34389545/35821974-62e0e25c-0a70-11e8-87dd-2cfffeb6ed47.png)
+![image](https://user-images.githubusercontent.com/38456463/43392866-43c69cf4-93f5-11e8-81e2-3e3f81b6ca1d.png)
 
 #### Master Build Status
 [![Build Status](https://travis-ci.com/plenteum/plenteum-crypto.svg?branch=master)](https://travis-ci.com/plenteum/plenteum-crypto) [![Build status](https://ci.appveyor.com/api/projects/status/github/plenteum/plenteum-crypto?branch=master&svg=true)](https://ci.appveyor.com/project/plenteum/plenteum-crypto)
