@@ -1,11 +1,12 @@
 # Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
 # Copyright (c) 2018-2019, The TurtleCoin Developers
+# Copyright (c) 2018-2019, The Plenteum Developers
 #
 # Please see the included LICENSE file for more information.
 
 cmake_minimum_required(VERSION 2.8)
 
-project(turtlecoin-crypto)
+project(plenteum-crypto)
 
 enable_language(C)
 enable_language(CXX)
@@ -162,12 +163,12 @@ set(SOURCES
   src/tree-hash.c
 )
 
-add_library(turtlecoin-crypto-static STATIC ${SOURCES})
+add_library(plenteum-crypto-static STATIC ${SOURCES})
 if(NOT APPLE)
-  add_library(turtlecoin-crypto-shared SHARED ${SOURCES})
+  add_library(plenteum-crypto-shared SHARED ${SOURCES})
 endif()
 
 if(WIN32)
-  target_link_libraries(turtlecoin-crypto-static ws2_32)
-  target_link_libraries(turtlecoin-crypto-shared ws2_32)
+  target_link_libraries(plenteum-crypto-static ws2_32)
+  target_link_libraries(plenteum-crypto-shared ws2_32)
 endif()

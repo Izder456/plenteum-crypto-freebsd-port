@@ -1,11 +1,11 @@
 ![image](https://user-images.githubusercontent.com/34389545/35821974-62e0e25c-0a70-11e8-87dd-2cfffeb6ed47.png)
 
 #### Master Build Status
-[![Build Status](https://travis-ci.org/turtlecoin/turtlecoin-crypto.svg?branch=master)](https://travis-ci.org/turtlecoin/turtlecoin-crypto) [![Build status](https://ci.appveyor.com/api/projects/status/github/turtlecoin/turtlecoin-crypto?branch=master&svg=true)](https://ci.appveyor.com/project/brandonlehmann/turtlecoin-crypto)
+[![Build Status](https://travis-ci.com/plenteum/plenteum-crypto.svg?branch=master)](https://travis-ci.com/plenteum/plenteum-crypto) [![Build status](https://ci.appveyor.com/api/projects/status/github/plenteum/plenteum-crypto?branch=master&svg=true)](https://ci.appveyor.com/project/plenteum/plenteum-crypto)
 
-# TurtleCoin: Standalone Cryptography Library
+# Plenteum: Standalone Cryptography Library
 
-This repository contains the necessary files to compile the cryptography library used within [TurtleCoin](https://turtlecoin.lol) as a standalone static library that can be included in various other projects.
+This repository contains the necessary files to compile the cryptography library used within [Plenteum](https://www.plenteum.com) as a standalone static library that can be included in various other projects.
 
 ### How To Compile
 
@@ -30,15 +30,15 @@ sudo apt-get install aptitude -y
 sudo aptitude install -y build-essential g++-8 gcc-8 git cmake
 export CC=gcc-8
 export CXX=g++-8
-git clone -b master --single-branch https://github.com/turtlecoin/turtlecoin-crypto
-cd turtlecoin-crypto
+git clone -b master --single-branch https://github.com/plenteum/plenteum-crypto
+cd plenteum-crypto
 mkdir build
 cd build
 cmake ..
 make -j
 ```
 
-The static library will be built as `libturtlecoin-crypto.a` in the build folder.
+The static library will be built as `libplenteum-crypto.a` in the build folder.
 
 ##### Ubuntu, using Clang
 
@@ -65,15 +65,15 @@ sudo aptitude install -y -o Aptitude::ProblemResolver::SolutionCost='100*cancele
 sudo aptitude install build-essential clang-6.0 libstdc++-7-dev git cmake
 export CC=clang-6.0
 export CXX=clang++-6.0
-git clone -b master --single-branch https://github.com/turtlecoin/turtlecoin-crypto
-cd turtlecoin-crypto
+git clone -b master --single-branch https://github.com/plenteum/plenteum-crypto
+cd plenteum-crypto
 mkdir build
 cd build
 cmake ..
 make -j
 ```
 
-The static library will be built as `libturtlecoin-crypto.a` in the build folder.
+The static library will be built as `libplenteum-crypto.a` in the build folder.
 
 ##### Generic Linux
 
@@ -83,15 +83,15 @@ If you want to use clang, ensure you set the environment variables `CC` and `CXX
 See the ubuntu instructions for an example.
 
 ```bash
-git clone -b master --single-branch https://github.com/turtlecoin/turtlecoin-crypto
-cd turtlecoin-crypto
+git clone -b master --single-branch https://github.com/plenteum/plenteum-crypto
+cd plenteum-crypto
 mkdir build
 cd build
 cmake ..
 make -j
 ```
 
-The static library will be built as `libturtlecoin-crypto.a` in the build folder.
+The static library will be built as `libplenteum-crypto.a` in the build folder.
 
 #### OSX/Apple, using GCC
 
@@ -106,15 +106,15 @@ which brew || /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/H
 brew install --force cmake boost llvm gcc@8
 export CC=gcc-8
 export CXX=g++-8
-git clone -b master --single-branch https://github.com/turtlecoin/turtlecoin-crypto
-cd turtlecoin-crypto
+git clone -b master --single-branch https://github.com/plenteum/plenteum-crypto
+cd plenteum-crypto
 mkdir build
 cd build
 cmake ..
 make
 ```
 
-The static library will be built as `libturtlecoin-crypto.a` in the build folder
+The static library will be built as `libplenteum-crypto.a` in the build folder
 
 #### OSX/Apple, using Clang
 
@@ -129,15 +129,15 @@ which brew || /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/H
 brew install --force cmake boost llvm
 export CC=/usr/local/opt/llvm/bin/clang
 export CXX=/usr/local/opt/llvm/bin/clang++
-git clone -b master --single-branch https://github.com/turtlecoin/turtlecoin-crypto
-cd turtlecoin-crypto
+git clone -b master --single-branch https://github.com/plenteum/plenteum-crypto
+cd plenteum-crypto
 mkdir build
 cd build
 cmake ..
 make
 ```
 
-The static library will be built as `libturtlecoin-crypto.a` in the build folder
+The static library will be built as `libplenteum-crypto.a` in the build folder
 
 #### Windows
 
@@ -150,7 +150,7 @@ The static library will be built as `libturtlecoin-crypto.a` in the build folder
 
 - From the start menu, open 'x64 Native Tools Command Prompt for vs2017'.
 ```
-cd <your_turtlecoin-crypto_directory>
+cd <your_plenteum-crypto_directory>
 mkdir build
 cd build
 set PATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin";%PATH%
@@ -159,9 +159,9 @@ cmake -G "Visual Studio 15 2017 Win64" ..
 
 If you have errors on this step about not being able to find the following static libraries, you may need to update your cmake. Open 'Visual Studio Installer' and click 'Update'.
 
-`MSBuild turtlecoin-crypto.sln /p:Configuration=Release /m`
+`MSBuild plenteum-crypto.sln /p:Configuration=Release /m`
 
-The static library will be built as `libturtlecoin-crypto.lib` in the `build/Release` folder
+The static library will be built as `libplenteum-crypto.lib` in the `build/Release` folder
 
 #### AARCH64/ARM64
 
@@ -178,27 +178,28 @@ Once you have a 64 bit image installed, setup proceeds the same as any Linux dis
 ##### Building
 
 ```bash
-git clone -b master --single-branch https://github.com/turtlecoin/turtlecoin-crypto
-cd turtlecoin-crypto
+git clone -b master --single-branch https://github.com/plenteum/plenteum-crypto
+cd plenteum-crypto
 mkdir build
 cd build
 cmake ..
 make
 ```
 
-The static library will be built as `libturtlecoin-crypto.a` in the build folder
+The static library will be built as `libplenteum-crypto.a` in the build folder
 
 #### Thanks
-Cryptonote Developers, Bytecoin Developers, Monero Developers, Forknote Project, TurtleCoin Community
+Cryptonote Developers, Bytecoin Developers, Monero Developers, Forknote Project, TurtleCoin Community, Plenteum Developers
 
 ### Copypasta for license when editing files
 
-Hi TurtleCoin contributor, thanks for forking and sending back Pull Requests. Extensive docs about contributing are in the works or elsewhere. For now this is the bit we need to get into all the files we touch. Please add it to the top of the files.
+Hi Plenteum contributor, thanks for forking and sending back Pull Requests. Extensive docs about contributing are in the works or elsewhere. For now this is the bit we need to get into all the files we touch. Please add it to the top of the files.
 
 ```
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
 // Copyright (c) 2014-2018, The Monero Project
 // Copyright (c) 2018-2019, The TurtleCoin Developers
+// Copyright (c) 2018-2019, The Plenteum Developers
 //
 // Please see the included LICENSE file for more information.
 ```
