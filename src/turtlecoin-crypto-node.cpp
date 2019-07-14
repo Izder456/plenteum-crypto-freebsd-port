@@ -94,7 +94,7 @@ void checkRingSignature(const Nan::FunctionCallbackInfo<v8::Value> &info)
 
             for (size_t i = 0; i < array->Length(); i++)
             {
-                std::string hash = std::string(*Nan::Utf8String(array->Get(i)));
+                std::string hash = std::string(*Nan::Utf8String(array->Get(i)->ToString(Nan::GetCurrentContext()).FromMaybe(v8::Local<v8::String>())));
 
                 publicKeys.push_back(hash);
             }
@@ -106,7 +106,7 @@ void checkRingSignature(const Nan::FunctionCallbackInfo<v8::Value> &info)
 
             for (size_t i = 0; i < array->Length(); i++)
             {
-                std::string hash = std::string(*Nan::Utf8String(array->Get(i)));
+                std::string hash = std::string(*Nan::Utf8String(array->Get(i)->ToString(Nan::GetCurrentContext()).FromMaybe(v8::Local<v8::String>())));
 
                 signatures.push_back(hash);
             }
@@ -495,7 +495,7 @@ void generateRingSignatures(const Nan::FunctionCallbackInfo<v8::Value> &info)
 
             for (size_t i = 0; i < array->Length(); i++)
             {
-                std::string hash = std::string(*Nan::Utf8String(array->Get(i)));
+                std::string hash = std::string(*Nan::Utf8String(array->Get(i)->ToString(Nan::GetCurrentContext()).FromMaybe(v8::Local<v8::String>())));
 
                 publicKeys.push_back(hash);
             }
@@ -829,7 +829,7 @@ void tree_hash(const Nan::FunctionCallbackInfo<v8::Value> &info)
 
             for (size_t i = 0; i < array->Length(); i++)
             {
-                std::string hash = std::string(*Nan::Utf8String(array->Get(i)));
+                std::string hash = std::string(*Nan::Utf8String(array->Get(i)->ToString(Nan::GetCurrentContext()).FromMaybe(v8::Local<v8::String>())));
 
                 hashes.push_back(hash);
             }
@@ -872,7 +872,7 @@ void tree_branch(const Nan::FunctionCallbackInfo<v8::Value> &info)
 
             for (size_t i = 0; i < array->Length(); i++)
             {
-                std::string hash = std::string(*Nan::Utf8String(array->Get(i)));
+                std::string hash = std::string(*Nan::Utf8String(array->Get(i)->ToString(Nan::GetCurrentContext()).FromMaybe(v8::Local<v8::String>())));
 
                 hashes.push_back(hash);
             }
@@ -919,7 +919,7 @@ void tree_hash_from_branch(const Nan::FunctionCallbackInfo<v8::Value> &info)
 
             for (size_t i = 0; i < array->Length(); i++)
             {
-                std::string hash = std::string(*Nan::Utf8String(array->Get(i)));
+                std::string hash = std::string(*Nan::Utf8String(array->Get(i)->ToString(Nan::GetCurrentContext()).FromMaybe(v8::Local<v8::String>())));
 
                 branches.push_back(hash);
             }
