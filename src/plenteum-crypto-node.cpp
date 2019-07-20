@@ -1932,4 +1932,4 @@ void InitModule(v8::Local<v8::Object> exports)
                  (chukwa_slow_hash)->GetFunction());
 }
 
-NODE_MODULE(turtlecoincrypto, InitModule);
+NODE_MODULE(plenteumcrypto, InitModule);

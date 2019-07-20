@@ -1,9 +1,11 @@
 ![image](https://user-images.githubusercontent.com/38456463/43392866-43c69cf4-93f5-11e8-81e2-3e3f81b6ca1d.png)
 
+[![NPM](https://nodei.co/npm/plenteum-crypto.png?downloads=true&stars=true)](https://www.npmjs.com/package/plenteum-crypto)
+
 #### Master Build Status
 [![Build Status](https://travis-ci.com/plenteum/plenteum-crypto.svg?branch=master)](https://travis-ci.com/plenteum/plenteum-crypto) 
 [![Build status](https://ci.appveyor.com/api/projects/status/github/plenteum/plenteum-crypto?branch=master&svg=true)](https://ci.appveyor.com/project/davehlong/plenteum-crypto)
-# TurtleCoin: Standalone Cryptography Library
+# Plenteum: Standalone Cryptography Library
 
 This repository contains the necessary files to compile the cryptography library used within [Plenteum](https://www.plenteum.com) as a standalone library that can be included in various other projects in a variety of development environments, including:
 
