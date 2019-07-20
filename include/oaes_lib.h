@@ -1,20 +1,19 @@
-
-/*
+/* 
  * ---------------------------------------------------------------------------
  * OpenAES License
  * ---------------------------------------------------------------------------
  * Copyright (c) 2012, Nabil S. Al Ramli, www.nalramli.com
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
+ * 
  *   - Redistributions of source code must retain the above copyright notice,
  *     this list of conditions and the following disclaimer.
  *   - Redistributions in binary form must reproduce the above copyright
  *     notice, this list of conditions and the following disclaimer in the
  *     documentation and/or other materials provided with the distribution.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -28,9 +27,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * ---------------------------------------------------------------------------
  */
-// Copyright (c) 2018-2019, The TurtleCoin Developers
-//
-// Please see the included LICENSE file for more information.
 
 #ifndef _OAES_LIB_H
 #define _OAES_LIB_H
@@ -38,7 +34,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#ifdef __cplusplus
+#ifdef __cplusplus 
 extern "C" {
 #endif
 
@@ -128,7 +124,7 @@ extern "C" {
 
 /*
  * // usage:
- *
+ * 
  * OAES_CTX * ctx = oaes_alloc();
  * .
  * .
@@ -215,7 +211,7 @@ extern "C" {
 
     OAES_API OAES_RET oaes_pseudo_encrypt_ecb(OAES_CTX * ctx, uint8_t * c);
 
-#ifdef __cplusplus
+#ifdef __cplusplus 
 }
 #endif
 #endif                          // _OAES_LIB_H

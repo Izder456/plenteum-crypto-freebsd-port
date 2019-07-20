@@ -1,25 +1,59 @@
 ![image](https://user-images.githubusercontent.com/38456463/43392866-43c69cf4-93f5-11e8-81e2-3e3f81b6ca1d.png)
 
 #### Master Build Status
-[![Build Status](https://travis-ci.com/plenteum/plenteum-crypto.svg?branch=master)](https://travis-ci.com/plenteum/plenteum-crypto) [![Build status](https://ci.appveyor.com/api/projects/status/github/plenteum/plenteum-crypto?branch=master&svg=true)](https://ci.appveyor.com/project/plenteum/plenteum-crypto)
+[![Build Status](https://travis-ci.com/plenteum/plenteum-crypto.svg?branch=master)](https://travis-ci.com/plenteum/plenteum-crypto) 
+[![Build status](https://ci.appveyor.com/api/projects/status/github/plenteum/plenteum-crypto?branch=master&svg=true)](https://ci.appveyor.com/project/davehlong/plenteum-crypto)
+# TurtleCoin: Standalone Cryptography Library
 
-# Plenteum: Standalone Cryptography Library
+This repository contains the necessary files to compile the cryptography library used within [Plenteum](https://www.plenteum.com) as a standalone library that can be included in various other projects in a variety of development environments, including:
 
-This repository contains the necessary files to compile the cryptography library used within [Plenteum](https://www.plenteum.com) as a standalone static library that can be included in various other projects.
+* Node.js >= 6.x
+* C++
+* C# (via C++ shared library & P/Invoke)
+* Native Javascript
+* WASM
 
-### How To Compile
+## Node.js Module
 
-#### Linux
+### Dependencies
+
+* [Node.js](https://nodejs.org) >= +6.x LTS (or Node v11)
+
+#### Windows
 
 ##### Prerequisites
 
-You will need the following packages: cmake (2.8 or higher), make, and git.
+Read very careful if you want this to work right the first time.
 
-You will also need either GCC/G++, or Clang.
+1) Open a *Windows Powershell* console as **Administrator**
+2) Run the command: `npm install -g windows-build-tools --vs2015`
+   ***This will take a while. Sit tight.***
+   
+#### Linux
 
-If you are using GCC, you will need GCC-7.0 or higher.
+### Installation
 
-If you are using Clang, you will need Clang 6.0 or higher. You will also need libstdc++\-6.0 or higher.
+```bash
+npm install plenteum-crypto
+```
+
+### Intialization
+
+```javascript
+const PlenteumCrypto = require('plenteum-crypto')
+```
+
+## C++ Library
+
+### How To Compile
+
+#### Build Optimization
+
+The CMake build system will, by default, create optimized *native* builds for your particular system type when you build the software. Using this method, the binaries created provide a better experience and all together faster performance.
+
+However, if you wish to create *portable* binaries that can be shared between systems, specify `-DARCH=default` in your CMake arguments during the build process. Note that *portable* binaries will have a noticable difference in performance than *native* binaries. For this reason, it is always best to build for your particuar system if possible.
+
+#### Linux
 
 ##### Ubuntu, using GCC
 
@@ -27,7 +61,7 @@ If you are using Clang, you will need Clang 6.0 or higher. You will also need li
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
 sudo apt-get update
 sudo apt-get install aptitude -y
-sudo aptitude install -y build-essential g++ gcc git cmake
+sudo aptitude install -y build-essential git cmake
 git clone -b master --single-branch https://github.com/plenteum/plenteum-crypto
 cd plenteum-crypto
 mkdir build
@@ -71,7 +105,9 @@ cmake ..
 make -j
 ```
 
-The static library will be built as `libplenteum-crypto.a` in the build folder.
+The following library files will be created in the `build` folder:
+
+* `libplenteum-crypto-static.a`
 
 ##### Generic Linux
 
@@ -89,27 +125,9 @@ cmake ..
 make -j
 ```
 
-The static library will be built as `libplenteum-crypto.a` in the build folder.
+The following library files will be created in the `build` folder:
 
-#### OSX/Apple, using GCC
-
-##### Prerequisites
-
-- Install XCode and Developer Tools.
-
-##### Building
-
-```bash
-which brew || /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-git clone -b master --single-branch https://github.com/plenteum/plenteum-crypto
-cd plenteum-crypto
-mkdir build
-cd build
-cmake ..
-make
-```
-
-The static library will be built as `libplenteum-crypto.a` in the build folder
+* `libplenteum-crypto-static.a`
 
 #### OSX/Apple, using Clang
 
@@ -132,7 +150,9 @@ cmake ..
 make
 ```
 
-The static library will be built as `libplenteum-crypto.a` in the build folder
+The following library files will be created in the `build` folder:
+
+* `libplenteum-crypto-static.a`
 
 #### Windows
 
@@ -152,41 +172,44 @@ set PATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\
 cmake -G "Visual Studio 15 2017 Win64" ..
 ```
 
-If you have errors on this step about not being able to find the following static libraries, you may need to update your cmake. Open 'Visual Studio Installer' and click 'Update'.
+**Note:** If you have errors on this step about not being able to find the some libraries, you may need to update your cmake. Open 'Visual Studio Installer' and click 'Update'.
 
 `MSBuild plenteum-crypto.sln /p:Configuration=Release /m`
 
-The static library will be built as `libplenteum-crypto.lib` in the `build/Release` folder
+The following library files will be created in the `build/Release` folder:
 
-#### AARCH64/ARM64
+* `plenteum-crypto-static.lib`
+* `plenteum-crypto-shared.lib`
+* `plenteum-crypto-shared.dll`
 
-The following images are known to work. Your operation system image **MUST** be 64 bit.
+## Native Javascript & WASM
 
-##### Known working images
+### Prerequisites
 
-- https://github.com/Crazyhead90/pi64/releases
-- https://fedoraproject.org/wiki/Architectures/ARM/Raspberry_Pi#aarch64_supported_images_for_Raspberry_Pi_3
-- https://archlinuxarm.org/platforms/armv8/broadcom/raspberry-pi-3
+You will need the following packages: CMake (2.8 or higher), make, and git.
 
-Once you have a 64 bit image installed, setup proceeds the same as any Linux distribution. Ensure you have at least 2GB of ram, or the build is likely to fail. You may need to setup swap space.
-
-##### Building
+### Compiling
 
 ```bash
 git clone -b master --single-branch https://github.com/plenteum/plenteum-crypto
 cd plenteum-crypto
-mkdir build
-cd build
-cmake ..
-make
+bash ./build_js.sh
 ```
 
-The static library will be built as `libplenteum-crypto.a` in the build folder
+This script will install the necessary dependencies on your machine and then proceed to compile the library to Native Javascript and WASM.
 
-#### Thanks
-Cryptonote Developers, Bytecoin Developers, Monero Developers, Forknote Project, TurtleCoin Community, Plenteum Developers
+The following library files will be created in the `jsbuild` folder:
 
-### Copypasta for license when editing files
+* Native Javascript
+  * `plenteum-crypto.js`
+* WASM
+  * `plenteum-crypto-wasm.js`: WASM Loader file
+  * `plenteum-crypto-wasm.wasm`: WASM file
+
+## Thanks
+Cryptonote Developers, Bytecoin Developers, Monero Developers, Forknote Project, TurtleCoin Community
+
+## Copypasta for license when editing files
 
 Hi Plenteum contributor, thanks for forking and sending back Pull Requests. Extensive docs about contributing are in the works or elsewhere. For now this is the bit we need to get into all the files we touch. Please add it to the top of the files.
 
