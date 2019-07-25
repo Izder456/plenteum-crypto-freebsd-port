@@ -4,7 +4,7 @@
 #
 # Please see the included LICENSE file for more information.
 
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 2.8)
 
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
@@ -14,7 +14,7 @@ endif()
 
 set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build, options are: Debug, Release, RelWithDebInfo")
 set(CMAKE_CONFIGURATION_TYPES Debug RelWithDebInfo Release CACHE TYPE INTERNAL)
-set(ARCH default CACHE STRING "CPU to build for: -march value or default")
+set(ARCH native CACHE STRING "CPU to build for: -march value or default")
 
 project(plenteum-crypto)
 
@@ -37,7 +37,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Set up options
 option(BUILD_JS "Compile to native Javascript" OFF)
 option(BUILD_WASM "Compile to WASM" OFF)
-option(JS_HASHFUNCTIONS "Compile JS or WASM with Hash Functions" OFF)
 
 if(BUILD_JS AND BUILD_WASM)
   message(FATAL_ERROR "You may only specify either BUILD_JS or BUILD_WASM at a single time")
@@ -256,10 +255,13 @@ else()
   # Override our release flags for emscripten compatibility
   set(CMAKE_C_FLAGS_DEBUG "")
   set(CMAKE_CXX_FLAGS_DEBUG "")
-  set(CMAKE_C_FLAGS_RELEASE "-O3 --llvm-lto 1 -DNDEBUG -Wno-unused-variable")
-  set(CMAKE_CXX_FLAGS_RELEASE "-O3 --llvm-lto 1 -DNDEBUG -Wno-unused-variable")
+  set(CMAKE_C_FLAGS_RELEASE "-O3 --llvm-lto 3 -DNDEBUG -Wno-unused-variable")
+  set(CMAKE_CXX_FLAGS_RELEASE "-O3 --llvm-lto 3 -DNDEBUG -Wno-unused-variable")
 
   set(JS_LINKFLAGS
+    --llvm-opts 3
+    --llvm-lto 3
+    --closure 1
     -s SINGLE_FILE=1
     -s EXPORT_NAME="'PlenteumCrypto'"
     -s POLYFILL_OLD_MATH_FUNCTIONS=1
@@ -271,7 +273,7 @@ else()
 
   if(BUILD_JS)
     set(CMAKE_EXECUTABLE_SUFFIX ".js")
-    set(JS_LINKFLAGS_STR "${JS_LINKFLAGS_STR} -s WASM=0 --js-opts 0")
+    set(JS_LINKFLAGS_STR "${JS_LINKFLAGS_STR} -s WASM=0 --js-opts 1")
     message(STATUS "emcc flags: ${JS_LINKFLAGS_STR}")
     set_target_properties(plenteum-crypto PROPERTIES LINK_FLAGS "${JS_LINKFLAGS_STR}")
   endif()

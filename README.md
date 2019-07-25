@@ -205,8 +205,7 @@ The following library files will be created in the `jsbuild` folder:
 * Native Javascript
   * `plenteum-crypto.js`
 * WASM
-  * `plenteum-crypto-wasm.js`: WASM Loader file
-  * `plenteum-crypto-wasm.wasm`: WASM file
+  * `plenteum-crypto-wasm.js`
 
 ## Thanks
 Cryptonote Developers, Bytecoin Developers, Monero Developers, Forknote Project, TurtleCoin Community
