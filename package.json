@@ -1,6 +1,6 @@
 {
   "name": "plenteum-crypto",
-  "version": "3.0.5",
+  "version": "3.0.6",
   "description": "Node C++ Addon for TurtleCoin Cryptographic Functions",
   "main": "index.js",
   "scripts": {
