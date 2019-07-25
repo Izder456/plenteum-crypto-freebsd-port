@@ -1,19 +1,19 @@
-/*
+/* 
  * ---------------------------------------------------------------------------
  * OpenAES License
  * ---------------------------------------------------------------------------
  * Copyright (c) 2012, Nabil S. Al Ramli, www.nalramli.com
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
+ * 
  *   - Redistributions of source code must retain the above copyright notice,
  *     this list of conditions and the following disclaimer.
  *   - Redistributions in binary form must reproduce the above copyright
  *     notice, this list of conditions and the following disclaimer in the
  *     documentation and/or other materials provided with the distribution.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -33,17 +33,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 
- // OS X, FreeBSD, and OpenBSD don't need malloc.h
+// OS X, FreeBSD, and OpenBSD don't need malloc.h
 #if !defined(__APPLE__) && !defined(__FreeBSD__) && !defined(__OpenBSD__) \
   && !defined(__DragonFly__)
-#include <malloc.h>
+ #include <malloc.h>
 #endif
 
 // ANDROID, FreeBSD, and OpenBSD also don't need timeb.h
 #if !defined(__FreeBSD__) && !defined(__OpenBSD__) && !defined(__ANDROID__)
-#include <sys/timeb.h>
+ #include <sys/timeb.h>
 #else
-#include <sys/time.h>
+ #include <sys/time.h>
 #endif
 
 #ifdef _WIN32
@@ -239,11 +239,11 @@ static uint8_t oaes_gf_mul_e[16][16] = {
 	/*f*/	{ 0xd7, 0xd9, 0xcb, 0xc5, 0xef, 0xe1, 0xf3, 0xfd, 0xa7, 0xa9, 0xbb, 0xb5, 0x9f, 0x91, 0x83, 0x8d },
 };
 
-static OAES_RET oaes_sub_byte(uint8_t* byte)
+static OAES_RET oaes_sub_byte( uint8_t * byte )
 {
 	size_t _x, _y;
-
-	if (NULL == byte)
+	
+	if( NULL == byte )
 		return OAES_RET_ARG1;
 
 	_x = _y = *byte;
@@ -251,15 +251,15 @@ static OAES_RET oaes_sub_byte(uint8_t* byte)
 	_y &= 0xf0;
 	_y >>= 4;
 	*byte = oaes_sub_byte_value[_y][_x];
-
+	
 	return OAES_RET_SUCCESS;
 }
 
-static OAES_RET oaes_inv_sub_byte(uint8_t* byte)
+static OAES_RET oaes_inv_sub_byte( uint8_t * byte )
 {
 	size_t _x, _y;
-
-	if (NULL == byte)
+	
+	if( NULL == byte )
 		return OAES_RET_ARG1;
 
 	_x = _y = *byte;
@@ -267,43 +267,43 @@ static OAES_RET oaes_inv_sub_byte(uint8_t* byte)
 	_y &= 0xf0;
 	_y >>= 4;
 	*byte = oaes_inv_sub_byte_value[_y][_x];
-
+	
 	return OAES_RET_SUCCESS;
 }
 /*
 static OAES_RET oaes_word_rot_right( uint8_t word[OAES_COL_LEN] )
 {
 	uint8_t _temp[OAES_COL_LEN];
-
+	
 	if( NULL == word )
 		return OAES_RET_ARG1;
 
 	memcpy( _temp + 1, word, OAES_COL_LEN - 1 );
 	_temp[0] = word[OAES_COL_LEN - 1];
 	memcpy( word, _temp, OAES_COL_LEN );
-
+	
 	return OAES_RET_SUCCESS;
 }
 */
-static OAES_RET oaes_word_rot_left(uint8_t word[OAES_COL_LEN])
+static OAES_RET oaes_word_rot_left( uint8_t word[OAES_COL_LEN] )
 {
 	uint8_t _temp[OAES_COL_LEN];
-
-	if (NULL == word)
+	
+	if( NULL == word )
 		return OAES_RET_ARG1;
 
-	memcpy(_temp, word + 1, OAES_COL_LEN - 1);
+	memcpy( _temp, word + 1, OAES_COL_LEN - 1 );
 	_temp[OAES_COL_LEN - 1] = word[0];
-	memcpy(word, _temp, OAES_COL_LEN);
-
+	memcpy( word, _temp, OAES_COL_LEN );
+	
 	return OAES_RET_SUCCESS;
 }
 
-static OAES_RET oaes_shift_rows(uint8_t block[OAES_BLOCK_SIZE])
+static OAES_RET oaes_shift_rows( uint8_t block[OAES_BLOCK_SIZE] )
 {
 	uint8_t _temp[OAES_BLOCK_SIZE];
 
-	if (NULL == block)
+	if( NULL == block )
 		return OAES_RET_ARG1;
 
 	_temp[0x00] = block[0x00];
@@ -322,16 +322,16 @@ static OAES_RET oaes_shift_rows(uint8_t block[OAES_BLOCK_SIZE])
 	_temp[0x0d] = block[0x01];
 	_temp[0x0e] = block[0x06];
 	_temp[0x0f] = block[0x0b];
-	memcpy(block, _temp, OAES_BLOCK_SIZE);
-
+	memcpy( block, _temp, OAES_BLOCK_SIZE );
+	
 	return OAES_RET_SUCCESS;
 }
 
-static OAES_RET oaes_inv_shift_rows(uint8_t block[OAES_BLOCK_SIZE])
+static OAES_RET oaes_inv_shift_rows( uint8_t block[OAES_BLOCK_SIZE] )
 {
 	uint8_t _temp[OAES_BLOCK_SIZE];
 
-	if (NULL == block)
+	if( NULL == block )
 		return OAES_RET_ARG1;
 
 	_temp[0x00] = block[0x00];
@@ -350,664 +350,664 @@ static OAES_RET oaes_inv_shift_rows(uint8_t block[OAES_BLOCK_SIZE])
 	_temp[0x0d] = block[0x09];
 	_temp[0x0e] = block[0x06];
 	_temp[0x0f] = block[0x03];
-	memcpy(block, _temp, OAES_BLOCK_SIZE);
-
+	memcpy( block, _temp, OAES_BLOCK_SIZE );
+	
 	return OAES_RET_SUCCESS;
 }
 
 static uint8_t oaes_gf_mul(uint8_t left, uint8_t right)
 {
 	size_t _x, _y;
-
+	
 	_x = _y = left;
 	_x &= 0x0f;
 	_y &= 0xf0;
 	_y >>= 4;
-
-	switch (right)
+	
+	switch( right )
 	{
-	case 0x02:
-		return oaes_gf_mul_2[_y][_x];
-		break;
-	case 0x03:
-		return oaes_gf_mul_3[_y][_x];
-		break;
-	case 0x09:
-		return oaes_gf_mul_9[_y][_x];
-		break;
-	case 0x0b:
-		return oaes_gf_mul_b[_y][_x];
-		break;
-	case 0x0d:
-		return oaes_gf_mul_d[_y][_x];
-		break;
-	case 0x0e:
-		return oaes_gf_mul_e[_y][_x];
-		break;
-	default:
-		return left;
-		break;
+		case 0x02:
+			return oaes_gf_mul_2[_y][_x];
+			break;
+		case 0x03:
+			return oaes_gf_mul_3[_y][_x];
+			break;
+		case 0x09:
+			return oaes_gf_mul_9[_y][_x];
+			break;
+		case 0x0b:
+			return oaes_gf_mul_b[_y][_x];
+			break;
+		case 0x0d:
+			return oaes_gf_mul_d[_y][_x];
+			break;
+		case 0x0e:
+			return oaes_gf_mul_e[_y][_x];
+			break;
+		default:
+			return left;
+			break;
 	}
 }
 
-static OAES_RET oaes_mix_cols(uint8_t word[OAES_COL_LEN])
+static OAES_RET oaes_mix_cols( uint8_t word[OAES_COL_LEN] )
 {
 	uint8_t _temp[OAES_COL_LEN];
 
-	if (NULL == word)
+	if( NULL == word )
 		return OAES_RET_ARG1;
-
-	_temp[0] = oaes_gf_mul(word[0], 0x02) ^ oaes_gf_mul(word[1], 0x03) ^
-		word[2] ^ word[3];
-	_temp[1] = word[0] ^ oaes_gf_mul(word[1], 0x02) ^
-		oaes_gf_mul(word[2], 0x03) ^ word[3];
+	
+	_temp[0] = oaes_gf_mul(word[0], 0x02) ^ oaes_gf_mul( word[1], 0x03 ) ^
+			word[2] ^ word[3];
+	_temp[1] = word[0] ^ oaes_gf_mul( word[1], 0x02 ) ^
+			oaes_gf_mul( word[2], 0x03 ) ^ word[3];
 	_temp[2] = word[0] ^ word[1] ^
-		oaes_gf_mul(word[2], 0x02) ^ oaes_gf_mul(word[3], 0x03);
-	_temp[3] = oaes_gf_mul(word[0], 0x03) ^ word[1] ^
-		word[2] ^ oaes_gf_mul(word[3], 0x02);
-	memcpy(word, _temp, OAES_COL_LEN);
-
+			oaes_gf_mul( word[2], 0x02 ) ^ oaes_gf_mul( word[3], 0x03 );
+	_temp[3] = oaes_gf_mul( word[0], 0x03 ) ^ word[1] ^
+			word[2] ^ oaes_gf_mul( word[3], 0x02 );
+	memcpy( word, _temp, OAES_COL_LEN );
+	
 	return OAES_RET_SUCCESS;
 }
 
-static OAES_RET oaes_inv_mix_cols(uint8_t word[OAES_COL_LEN])
+static OAES_RET oaes_inv_mix_cols( uint8_t word[OAES_COL_LEN] )
 {
 	uint8_t _temp[OAES_COL_LEN];
 
-	if (NULL == word)
+	if( NULL == word )
 		return OAES_RET_ARG1;
-
-	_temp[0] = oaes_gf_mul(word[0], 0x0e) ^ oaes_gf_mul(word[1], 0x0b) ^
-		oaes_gf_mul(word[2], 0x0d) ^ oaes_gf_mul(word[3], 0x09);
-	_temp[1] = oaes_gf_mul(word[0], 0x09) ^ oaes_gf_mul(word[1], 0x0e) ^
-		oaes_gf_mul(word[2], 0x0b) ^ oaes_gf_mul(word[3], 0x0d);
-	_temp[2] = oaes_gf_mul(word[0], 0x0d) ^ oaes_gf_mul(word[1], 0x09) ^
-		oaes_gf_mul(word[2], 0x0e) ^ oaes_gf_mul(word[3], 0x0b);
-	_temp[3] = oaes_gf_mul(word[0], 0x0b) ^ oaes_gf_mul(word[1], 0x0d) ^
-		oaes_gf_mul(word[2], 0x09) ^ oaes_gf_mul(word[3], 0x0e);
-	memcpy(word, _temp, OAES_COL_LEN);
-
+	
+	_temp[0] = oaes_gf_mul( word[0], 0x0e ) ^ oaes_gf_mul( word[1], 0x0b ) ^
+			oaes_gf_mul( word[2], 0x0d ) ^ oaes_gf_mul( word[3], 0x09 );
+	_temp[1] = oaes_gf_mul( word[0], 0x09 ) ^ oaes_gf_mul( word[1], 0x0e ) ^
+			oaes_gf_mul( word[2], 0x0b ) ^ oaes_gf_mul( word[3], 0x0d );
+	_temp[2] = oaes_gf_mul( word[0], 0x0d ) ^ oaes_gf_mul( word[1], 0x09 ) ^
+			oaes_gf_mul( word[2], 0x0e ) ^ oaes_gf_mul( word[3], 0x0b );
+	_temp[3] = oaes_gf_mul( word[0], 0x0b ) ^ oaes_gf_mul( word[1], 0x0d ) ^
+			oaes_gf_mul( word[2], 0x09 ) ^ oaes_gf_mul( word[3], 0x0e );
+	memcpy( word, _temp, OAES_COL_LEN );
+	
 	return OAES_RET_SUCCESS;
 }
 
 OAES_RET oaes_sprintf(
-	char* buf, size_t* buf_len, const uint8_t* data, size_t data_len)
+		char * buf, size_t * buf_len, const uint8_t * data, size_t data_len )
 {
 	size_t _i, _buf_len_in;
 	char _temp[4];
-
-	if (NULL == buf_len)
+	
+	if( NULL == buf_len )
 		return OAES_RET_ARG2;
 
 	_buf_len_in = *buf_len;
 	*buf_len = data_len * 3 + data_len / OAES_BLOCK_SIZE + 1;
-
-	if (NULL == buf)
+	
+	if( NULL == buf )
 		return OAES_RET_SUCCESS;
 
-	if (*buf_len > _buf_len_in)
+	if( *buf_len > _buf_len_in )
 		return OAES_RET_BUF;
 
-	if (NULL == data)
+	if( NULL == data )
 		return OAES_RET_ARG3;
 
-	strcpy(buf, "");
-
-	for (_i = 0; _i < data_len; _i++)
+	strcpy( buf, "" );
+	
+	for( _i = 0; _i < data_len; _i++ )
 	{
-		sprintf(_temp, "%02x ", data[_i]);
-		strcat(buf, _temp);
-		if (_i && 0 == (_i + 1) % OAES_BLOCK_SIZE)
-			strcat(buf, "\n");
+		sprintf( _temp, "%02x ", data[_i] );
+		strcat( buf, _temp );
+		if( _i && 0 == ( _i + 1 ) % OAES_BLOCK_SIZE )
+			strcat( buf, "\n" );
 	}
-
+	
 	return OAES_RET_SUCCESS;
 }
 
 #ifdef OAES_HAVE_ISAAC
-static void oaes_get_seed(char buf[RANDSIZ + 1])
+static void oaes_get_seed( char buf[RANDSIZ + 1] )
 {
-#if !defined(__FreeBSD__) && !defined(__OpenBSD__)
+        #if !defined(__FreeBSD__) && !defined(__OpenBSD__)
 	struct timeb timer;
-	struct tm* gmTimer;
-	char* _test = NULL;
-
-	ftime(&timer);
-	gmTimer = gmtime(&timer.time);
-	_test = (char*)calloc(sizeof(char), timer.millitm);
-	sprintf(buf, "%04d%02d%02d%02d%02d%02d%03d%p%d",
+	struct tm *gmTimer;
+	char * _test = NULL;
+	
+	ftime (&timer);
+	gmTimer = gmtime( &timer.time );
+	_test = (char *) calloc( sizeof( char ), timer.millitm );
+	sprintf( buf, "%04d%02d%02d%02d%02d%02d%03d%p%d",
 		gmTimer->tm_year + 1900, gmTimer->tm_mon + 1, gmTimer->tm_mday,
 		gmTimer->tm_hour, gmTimer->tm_min, gmTimer->tm_sec, timer.millitm,
-		_test + timer.millitm, getpid());
-#else
+		_test + timer.millitm, getpid() );
+	#else
 	struct timeval timer;
-	struct tm* gmTimer;
-	char* _test = NULL;
-
+	struct tm *gmTimer;
+	char * _test = NULL;
+	
 	gettimeofday(&timer, NULL);
-	gmTimer = gmtime(&timer.tv_sec);
-	_test = (char*)calloc(sizeof(char), timer.tv_usec / 1000);
-	sprintf(buf, "%04d%02d%02d%02d%02d%02d%03d%p%d",
+	gmTimer = gmtime( &timer.tv_sec );
+	_test = (char *) calloc( sizeof( char ), timer.tv_usec/1000 );
+	sprintf( buf, "%04d%02d%02d%02d%02d%02d%03d%p%d",
 		gmTimer->tm_year + 1900, gmTimer->tm_mon + 1, gmTimer->tm_mday,
-		gmTimer->tm_hour, gmTimer->tm_min, gmTimer->tm_sec, timer.tv_usec / 1000,
-		_test + timer.tv_usec / 1000, getpid());
-#endif
-
-	if (_test)
-		free(_test);
+		gmTimer->tm_hour, gmTimer->tm_min, gmTimer->tm_sec, timer.tv_usec/1000,
+		_test + timer.tv_usec/1000, getpid() );
+	#endif
+		
+	if( _test )
+		free( _test );
 }
 #else
 static uint32_t oaes_get_seed(void)
 {
-#if !defined(__FreeBSD__) && !defined(__OpenBSD__) && !defined(__ANDROID__)
+        #if !defined(__FreeBSD__) && !defined(__OpenBSD__) && !defined(__ANDROID__)
 	struct timeb timer;
-	struct tm* gmTimer;
-	char* _test = NULL;
+	struct tm *gmTimer;
+	char * _test = NULL;
 	uint32_t _ret = 0;
-
-	ftime(&timer);
-	gmTimer = gmtime(&timer.time);
-	_test = (char*)calloc(sizeof(char), timer.millitm);
+	
+	ftime (&timer);
+	gmTimer = gmtime( &timer.time );
+	_test = (char *) calloc( sizeof( char ), timer.millitm );
 	_ret = gmTimer->tm_year + 1900 + gmTimer->tm_mon + 1 + gmTimer->tm_mday +
-		gmTimer->tm_hour + gmTimer->tm_min + gmTimer->tm_sec + timer.millitm +
-		(uintptr_t)(_test + timer.millitm) + getpid();
-#else
+			gmTimer->tm_hour + gmTimer->tm_min + gmTimer->tm_sec + timer.millitm +
+			(uintptr_t) ( _test + timer.millitm ) + getpid();
+	#else
 	struct timeval timer;
-	struct tm* gmTimer;
-	char* _test = NULL;
+	struct tm *gmTimer;
+	char * _test = NULL;
 	uint32_t _ret = 0;
-
+	
 	gettimeofday(&timer, NULL);
-	gmTimer = gmtime(&timer.tv_sec);
-	_test = (char*)calloc(sizeof(char), timer.tv_usec / 1000);
+	gmTimer = gmtime( &timer.tv_sec );
+	_test = (char *) calloc( sizeof( char ), timer.tv_usec/1000 );
 	_ret = gmTimer->tm_year + 1900 + gmTimer->tm_mon + 1 + gmTimer->tm_mday +
-		gmTimer->tm_hour + gmTimer->tm_min + gmTimer->tm_sec + timer.tv_usec / 1000 +
-		(uintptr_t)(_test + timer.tv_usec / 1000) + getpid();
-#endif
+			gmTimer->tm_hour + gmTimer->tm_min + gmTimer->tm_sec + timer.tv_usec/1000 +
+			(uintptr_t) ( _test + timer.tv_usec/1000 ) + getpid();
+	#endif
 
-	if (_test)
-		free(_test);
-
+	if( _test )
+		free( _test );
+	
 	return _ret;
 }
 #endif // OAES_HAVE_ISAAC
 
-static OAES_RET oaes_key_destroy(oaes_key** key)
+static OAES_RET oaes_key_destroy( oaes_key ** key )
 {
-	if (NULL == *key)
+	if( NULL == *key )
 		return OAES_RET_SUCCESS;
-
-	if ((*key)->data)
+	
+	if( (*key)->data )
 	{
-		free((*key)->data);
+		free( (*key)->data );
 		(*key)->data = NULL;
 	}
-
-	if ((*key)->exp_data)
+	
+	if( (*key)->exp_data )
 	{
-		free((*key)->exp_data);
+		free( (*key)->exp_data );
 		(*key)->exp_data = NULL;
 	}
-
+	
 	(*key)->data_len = 0;
 	(*key)->exp_data_len = 0;
 	(*key)->num_keys = 0;
 	(*key)->key_base = 0;
-	free(*key);
+	free( *key );
 	*key = NULL;
-
+	
 	return OAES_RET_SUCCESS;
 }
 
-static OAES_RET oaes_key_expand(OAES_CTX* ctx)
+static OAES_RET oaes_key_expand( OAES_CTX * ctx )
 {
 	size_t _i, _j;
-	oaes_ctx* _ctx = (oaes_ctx*)ctx;
-
-	if (NULL == _ctx)
+	oaes_ctx * _ctx = (oaes_ctx *) ctx;
+	
+	if( NULL == _ctx )
 		return OAES_RET_ARG1;
-
-	if (NULL == _ctx->key)
+	
+	if( NULL == _ctx->key )
 		return OAES_RET_NOKEY;
-
+	
 	_ctx->key->key_base = _ctx->key->data_len / OAES_RKEY_LEN;
-	_ctx->key->num_keys = _ctx->key->key_base + OAES_ROUND_BASE;
-
+	_ctx->key->num_keys =  _ctx->key->key_base + OAES_ROUND_BASE;
+					
 	_ctx->key->exp_data_len = _ctx->key->num_keys * OAES_RKEY_LEN * OAES_COL_LEN;
-	_ctx->key->exp_data = (uint8_t*)
-		calloc(_ctx->key->exp_data_len, sizeof(uint8_t));
-
-	if (NULL == _ctx->key->exp_data)
+	_ctx->key->exp_data = (uint8_t *)
+			calloc( _ctx->key->exp_data_len, sizeof( uint8_t ));
+	
+	if( NULL == _ctx->key->exp_data )
 		return OAES_RET_MEM;
-
+	
 	// the first _ctx->key->data_len are a direct copy
-	memcpy(_ctx->key->exp_data, _ctx->key->data, _ctx->key->data_len);
+	memcpy( _ctx->key->exp_data, _ctx->key->data, _ctx->key->data_len );
 
 	// apply ExpandKey algorithm for remainder
-	for (_i = _ctx->key->key_base; _i < _ctx->key->num_keys * OAES_RKEY_LEN; _i++)
+	for( _i = _ctx->key->key_base; _i < _ctx->key->num_keys * OAES_RKEY_LEN; _i++ )
 	{
 		uint8_t _temp[OAES_COL_LEN];
-
-		memcpy(_temp,
-			_ctx->key->exp_data + (_i - 1) * OAES_RKEY_LEN, OAES_COL_LEN);
-
+		
+		memcpy( _temp,
+				_ctx->key->exp_data + ( _i - 1 ) * OAES_RKEY_LEN, OAES_COL_LEN );
+		
 		// transform key column
-		if (0 == _i % _ctx->key->key_base)
+		if( 0 == _i % _ctx->key->key_base )
 		{
-			oaes_word_rot_left(_temp);
+			oaes_word_rot_left( _temp );
 
-			for (_j = 0; _j < OAES_COL_LEN; _j++)
-				oaes_sub_byte(_temp + _j);
+			for( _j = 0; _j < OAES_COL_LEN; _j++ )
+				oaes_sub_byte( _temp + _j );
 
-			_temp[0] = _temp[0] ^ oaes_gf_8[_i / _ctx->key->key_base - 1];
+			_temp[0] = _temp[0] ^ oaes_gf_8[ _i / _ctx->key->key_base - 1 ];
 		}
-		else if (_ctx->key->key_base > 6 && 4 == _i % _ctx->key->key_base)
+		else if( _ctx->key->key_base > 6 && 4 == _i % _ctx->key->key_base )
 		{
-			for (_j = 0; _j < OAES_COL_LEN; _j++)
-				oaes_sub_byte(_temp + _j);
+			for( _j = 0; _j < OAES_COL_LEN; _j++ )
+				oaes_sub_byte( _temp + _j );
 		}
-
-		for (_j = 0; _j < OAES_COL_LEN; _j++)
+		
+		for( _j = 0; _j < OAES_COL_LEN; _j++ )
 		{
-			_ctx->key->exp_data[_i * OAES_RKEY_LEN + _j] =
-				_ctx->key->exp_data[(_i - _ctx->key->key_base) *
-				OAES_RKEY_LEN + _j] ^ _temp[_j];
+			_ctx->key->exp_data[ _i * OAES_RKEY_LEN + _j ] =
+					_ctx->key->exp_data[ ( _i - _ctx->key->key_base ) *
+					OAES_RKEY_LEN + _j ] ^ _temp[_j];
 		}
 	}
-
+	
 	return OAES_RET_SUCCESS;
 }
 
-static OAES_RET oaes_key_gen(OAES_CTX* ctx, size_t key_size)
+static OAES_RET oaes_key_gen( OAES_CTX * ctx, size_t key_size )
 {
 	size_t _i;
-	oaes_key* _key = NULL;
-	oaes_ctx* _ctx = (oaes_ctx*)ctx;
+	oaes_key * _key = NULL;
+	oaes_ctx * _ctx = (oaes_ctx *) ctx;
 	OAES_RET _rc = OAES_RET_SUCCESS;
-
-	if (NULL == _ctx)
+	
+	if( NULL == _ctx )
 		return OAES_RET_ARG1;
-
-	_key = (oaes_key*)calloc(sizeof(oaes_key), 1);
-
-	if (NULL == _key)
+	
+	_key = (oaes_key *) calloc( sizeof( oaes_key ), 1 );
+	
+	if( NULL == _key )
 		return OAES_RET_MEM;
-
-	if (_ctx->key)
-		oaes_key_destroy(&(_ctx->key));
-
+	
+	if( _ctx->key )
+		oaes_key_destroy( &(_ctx->key) );
+	
 	_key->data_len = key_size;
-	_key->data = (uint8_t*)calloc(key_size, sizeof(uint8_t));
-
-	if (NULL == _key->data)
+	_key->data = (uint8_t *) calloc( key_size, sizeof( uint8_t ));
+	
+	if( NULL == _key->data )
 	{
-		free(_key);
+		free( _key );
 		return OAES_RET_MEM;
 	}
-
-	for (_i = 0; _i < key_size; _i++)
+	
+	for( _i = 0; _i < key_size; _i++ )
 #ifdef OAES_HAVE_ISAAC
-		_key->data[_i] = (uint8_t)rand(_ctx->rctx);
+		_key->data[_i] = (uint8_t) rand( _ctx->rctx );
 #else
-		_key->data[_i] = (uint8_t)rand();
+		_key->data[_i] = (uint8_t) rand();
 #endif // OAES_HAVE_ISAAC
-
+	
 	_ctx->key = _key;
-	_rc = _rc || oaes_key_expand(ctx);
-
-	if (_rc != OAES_RET_SUCCESS)
+	_rc = _rc || oaes_key_expand( ctx );
+	
+	if( _rc != OAES_RET_SUCCESS )
 	{
-		oaes_key_destroy(&(_ctx->key));
+		oaes_key_destroy( &(_ctx->key) );
 		return _rc;
 	}
-
+	
 	return OAES_RET_SUCCESS;
 }
 
-OAES_RET oaes_key_gen_128(OAES_CTX* ctx)
+OAES_RET oaes_key_gen_128( OAES_CTX * ctx )
 {
-	return oaes_key_gen(ctx, 16);
+	return oaes_key_gen( ctx, 16 );
 }
 
-OAES_RET oaes_key_gen_192(OAES_CTX* ctx)
+OAES_RET oaes_key_gen_192( OAES_CTX * ctx )
 {
-	return oaes_key_gen(ctx, 24);
+	return oaes_key_gen( ctx, 24 );
 }
 
-OAES_RET oaes_key_gen_256(OAES_CTX* ctx)
+OAES_RET oaes_key_gen_256( OAES_CTX * ctx )
 {
-	return oaes_key_gen(ctx, 32);
+	return oaes_key_gen( ctx, 32 );
 }
 
-OAES_RET oaes_key_export(OAES_CTX* ctx,
-	uint8_t* data, size_t* data_len)
+OAES_RET oaes_key_export( OAES_CTX * ctx,
+		uint8_t * data, size_t * data_len )
 {
 	size_t _data_len_in;
-	oaes_ctx* _ctx = (oaes_ctx*)ctx;
-
-	if (NULL == _ctx)
+	oaes_ctx * _ctx = (oaes_ctx *) ctx;
+	
+	if( NULL == _ctx )
 		return OAES_RET_ARG1;
-
-	if (NULL == _ctx->key)
+	
+	if( NULL == _ctx->key )
 		return OAES_RET_NOKEY;
-
-	if (NULL == data_len)
+	
+	if( NULL == data_len )
 		return OAES_RET_ARG3;
 
 	_data_len_in = *data_len;
 	// data + header
 	*data_len = _ctx->key->data_len + OAES_BLOCK_SIZE;
 
-	if (NULL == data)
+	if( NULL == data )
 		return OAES_RET_SUCCESS;
-
-	if (_data_len_in < *data_len)
+	
+	if( _data_len_in < *data_len )
 		return OAES_RET_BUF;
-
+	
 	// header
-	memcpy(data, oaes_header, OAES_BLOCK_SIZE);
+	memcpy( data, oaes_header, OAES_BLOCK_SIZE );
 	data[5] = 0x01;
 	data[7] = _ctx->key->data_len;
-	memcpy(data + OAES_BLOCK_SIZE, _ctx->key->data, _ctx->key->data_len);
-
+	memcpy( data + OAES_BLOCK_SIZE, _ctx->key->data, _ctx->key->data_len );
+	
 	return OAES_RET_SUCCESS;
 }
 
-OAES_RET oaes_key_export_data(OAES_CTX* ctx,
-	uint8_t* data, size_t* data_len)
+OAES_RET oaes_key_export_data( OAES_CTX * ctx,
+		uint8_t * data, size_t * data_len )
 {
 	size_t _data_len_in;
-	oaes_ctx* _ctx = (oaes_ctx*)ctx;
-
-	if (NULL == _ctx)
+	oaes_ctx * _ctx = (oaes_ctx *) ctx;
+	
+	if( NULL == _ctx )
 		return OAES_RET_ARG1;
-
-	if (NULL == _ctx->key)
+	
+	if( NULL == _ctx->key )
 		return OAES_RET_NOKEY;
-
-	if (NULL == data_len)
+	
+	if( NULL == data_len )
 		return OAES_RET_ARG3;
 
 	_data_len_in = *data_len;
 	*data_len = _ctx->key->data_len;
 
-	if (NULL == data)
+	if( NULL == data )
 		return OAES_RET_SUCCESS;
-
-	if (_data_len_in < *data_len)
+	
+	if( _data_len_in < *data_len )
 		return OAES_RET_BUF;
-
-	memcpy(data, _ctx->key->data, *data_len);
-
+	
+	memcpy( data, _ctx->key->data, *data_len );
+	
 	return OAES_RET_SUCCESS;
 }
 
-OAES_RET oaes_key_import(OAES_CTX* ctx,
-	const uint8_t* data, size_t data_len)
+OAES_RET oaes_key_import( OAES_CTX * ctx,
+		const uint8_t * data, size_t data_len )
 {
-	oaes_ctx* _ctx = (oaes_ctx*)ctx;
+	oaes_ctx * _ctx = (oaes_ctx *) ctx;
 	OAES_RET _rc = OAES_RET_SUCCESS;
 	int _key_length;
-
-	if (NULL == _ctx)
+	
+	if( NULL == _ctx )
 		return OAES_RET_ARG1;
-
-	if (NULL == data)
+	
+	if( NULL == data )
 		return OAES_RET_ARG2;
-
-	switch (data_len)
+	
+	switch( data_len )
 	{
-	case 16 + OAES_BLOCK_SIZE:
-	case 24 + OAES_BLOCK_SIZE:
-	case 32 + OAES_BLOCK_SIZE:
-		break;
-	default:
-		return OAES_RET_ARG3;
+		case 16 + OAES_BLOCK_SIZE:
+		case 24 + OAES_BLOCK_SIZE:
+		case 32 + OAES_BLOCK_SIZE:
+			break;
+		default:
+			return OAES_RET_ARG3;
 	}
-
+	
 	// header
-	if (0 != memcmp(data, oaes_header, 4))
+	if( 0 != memcmp( data, oaes_header, 4 ) )
 		return OAES_RET_HEADER;
 
 	// header version
-	switch (data[4])
+	switch( data[4] )
 	{
-	case 0x01:
-		break;
-	default:
-		return OAES_RET_HEADER;
+		case 0x01:
+			break;
+		default:
+			return OAES_RET_HEADER;
 	}
-
+	
 	// header type
-	switch (data[5])
+	switch( data[5] )
 	{
-	case 0x01:
-		break;
-	default:
-		return OAES_RET_HEADER;
+		case 0x01:
+			break;
+		default:
+			return OAES_RET_HEADER;
 	}
-
+	
 	// options
 	_key_length = data[7];
-	switch (_key_length)
+	switch( _key_length )
 	{
-	case 16:
-	case 24:
-	case 32:
-		break;
-	default:
-		return OAES_RET_HEADER;
+		case 16:
+		case 24:
+		case 32:
+			break;
+		default:
+			return OAES_RET_HEADER;
 	}
-
-	if ((int)data_len != _key_length + OAES_BLOCK_SIZE)
-		return OAES_RET_ARG3;
-
-	if (_ctx->key)
-		oaes_key_destroy(&(_ctx->key));
-
-	_ctx->key = (oaes_key*)calloc(sizeof(oaes_key), 1);
-
-	if (NULL == _ctx->key)
+	
+	if( (int)data_len != _key_length + OAES_BLOCK_SIZE )
+			return OAES_RET_ARG3;
+	
+	if( _ctx->key )
+		oaes_key_destroy( &(_ctx->key) );
+	
+	_ctx->key = (oaes_key *) calloc( sizeof( oaes_key ), 1 );
+	
+	if( NULL == _ctx->key )
 		return OAES_RET_MEM;
-
+	
 	_ctx->key->data_len = _key_length;
-	_ctx->key->data = (uint8_t*)
-		calloc(_key_length, sizeof(uint8_t));
-
-	if (NULL == _ctx->key->data)
+	_ctx->key->data = (uint8_t *)
+			calloc( _key_length, sizeof( uint8_t ));
+	
+	if( NULL == _ctx->key->data )
 	{
-		oaes_key_destroy(&(_ctx->key));
+		oaes_key_destroy( &(_ctx->key) );
 		return OAES_RET_MEM;
 	}
 
-	memcpy(_ctx->key->data, data + OAES_BLOCK_SIZE, _key_length);
-	_rc = _rc || oaes_key_expand(ctx);
-
-	if (_rc != OAES_RET_SUCCESS)
+	memcpy( _ctx->key->data, data + OAES_BLOCK_SIZE, _key_length );
+	_rc = _rc || oaes_key_expand( ctx );
+	
+	if( _rc != OAES_RET_SUCCESS )
 	{
-		oaes_key_destroy(&(_ctx->key));
+		oaes_key_destroy( &(_ctx->key) );
 		return _rc;
 	}
-
+	
 	return OAES_RET_SUCCESS;
 }
 
-OAES_RET oaes_key_import_data(OAES_CTX* ctx,
-	const uint8_t* data, size_t data_len)
+OAES_RET oaes_key_import_data( OAES_CTX * ctx,
+		const uint8_t * data, size_t data_len )
 {
-	oaes_ctx* _ctx = (oaes_ctx*)ctx;
+	oaes_ctx * _ctx = (oaes_ctx *) ctx;
 	OAES_RET _rc = OAES_RET_SUCCESS;
-
-	if (NULL == _ctx)
+	
+	if( NULL == _ctx )
 		return OAES_RET_ARG1;
-
-	if (NULL == data)
+	
+	if( NULL == data )
 		return OAES_RET_ARG2;
-
-	switch (data_len)
+	
+	switch( data_len )
 	{
-	case 16:
-	case 24:
-	case 32:
-		break;
-	default:
-		return OAES_RET_ARG3;
+		case 16:
+		case 24:
+		case 32:
+			break;
+		default:
+			return OAES_RET_ARG3;
 	}
-
-	if (_ctx->key)
-		oaes_key_destroy(&(_ctx->key));
-
-	_ctx->key = (oaes_key*)calloc(sizeof(oaes_key), 1);
-
-	if (NULL == _ctx->key)
+	
+	if( _ctx->key )
+		oaes_key_destroy( &(_ctx->key) );
+	
+	_ctx->key = (oaes_key *) calloc( sizeof( oaes_key ), 1 );
+	
+	if( NULL == _ctx->key )
 		return OAES_RET_MEM;
-
+	
 	_ctx->key->data_len = data_len;
-	_ctx->key->data = (uint8_t*)
-		calloc(data_len, sizeof(uint8_t));
-
-	if (NULL == _ctx->key->data)
+	_ctx->key->data = (uint8_t *)
+			calloc( data_len, sizeof( uint8_t ));
+	
+	if( NULL == _ctx->key->data )
 	{
-		oaes_key_destroy(&(_ctx->key));
+		oaes_key_destroy( &(_ctx->key) );
 		return OAES_RET_MEM;
 	}
 
-	memcpy(_ctx->key->data, data, data_len);
-	_rc = _rc || oaes_key_expand(ctx);
-
-	if (_rc != OAES_RET_SUCCESS)
+	memcpy( _ctx->key->data, data, data_len );
+	_rc = _rc || oaes_key_expand( ctx );
+	
+	if( _rc != OAES_RET_SUCCESS )
 	{
-		oaes_key_destroy(&(_ctx->key));
+		oaes_key_destroy( &(_ctx->key) );
 		return _rc;
 	}
-
+	
 	return OAES_RET_SUCCESS;
 }
 
-OAES_CTX* oaes_alloc(void)
+OAES_CTX * oaes_alloc(void)
 {
-	oaes_ctx* _ctx = (oaes_ctx*)calloc(sizeof(oaes_ctx), 1);
-
-	if (NULL == _ctx)
+	oaes_ctx * _ctx = (oaes_ctx *) calloc( sizeof( oaes_ctx ), 1 );
+	
+	if( NULL == _ctx )
 		return NULL;
 
 #ifdef OAES_HAVE_ISAAC
 	{
-		ub4 _i = 0;
+	  ub4 _i = 0;
 		char _seed[RANDSIZ + 1];
+		
+		_ctx->rctx = (randctx *) calloc( sizeof( randctx ), 1 );
 
-		_ctx->rctx = (randctx*)calloc(sizeof(randctx), 1);
-
-		if (NULL == _ctx->rctx)
+		if( NULL == _ctx->rctx )
 		{
-			free(_ctx);
+			free( _ctx );
 			return NULL;
 		}
 
-		oaes_get_seed(_seed);
-		memset(_ctx->rctx->randrsl, 0, RANDSIZ);
-		memcpy(_ctx->rctx->randrsl, _seed, RANDSIZ);
-		randinit(_ctx->rctx, TRUE);
+		oaes_get_seed( _seed );
+		memset( _ctx->rctx->randrsl, 0, RANDSIZ );
+		memcpy( _ctx->rctx->randrsl, _seed, RANDSIZ );
+		randinit( _ctx->rctx, TRUE);
 	}
 #else
-	srand(oaes_get_seed());
+		srand( oaes_get_seed() );
 #endif // OAES_HAVE_ISAAC
 
 	_ctx->key = NULL;
-	oaes_set_option(_ctx, OAES_OPTION_CBC, NULL);
+	oaes_set_option( _ctx, OAES_OPTION_CBC, NULL );
 
 #ifdef OAES_DEBUG
 	_ctx->step_cb = NULL;
-	oaes_set_option(_ctx, OAES_OPTION_STEP_OFF, NULL);
+	oaes_set_option( _ctx, OAES_OPTION_STEP_OFF, NULL );
 #endif // OAES_DEBUG
 
-	return (OAES_CTX*)_ctx;
+	return (OAES_CTX *) _ctx;
 }
 
-OAES_RET oaes_free(OAES_CTX** ctx)
+OAES_RET oaes_free( OAES_CTX ** ctx )
 {
-	oaes_ctx** _ctx = (oaes_ctx * *)ctx;
+	oaes_ctx ** _ctx = (oaes_ctx **) ctx;
 
-	if (NULL == _ctx)
+	if( NULL == _ctx )
 		return OAES_RET_ARG1;
-
-	if (NULL == *_ctx)
+	
+	if( NULL == *_ctx )
 		return OAES_RET_SUCCESS;
-
-	if ((*_ctx)->key)
-		oaes_key_destroy(&((*_ctx)->key));
+	
+	if( (*_ctx)->key )
+		oaes_key_destroy( &((*_ctx)->key) );
 
 #ifdef OAES_HAVE_ISAAC
-	if ((*_ctx)->rctx)
+	if( (*_ctx)->rctx )
 	{
-		free((*_ctx)->rctx);
+		free( (*_ctx)->rctx );
 		(*_ctx)->rctx = NULL;
 	}
 #endif // OAES_HAVE_ISAAC
-
-	free(*_ctx);
+	
+	free( *_ctx );
 	*_ctx = NULL;
 
 	return OAES_RET_SUCCESS;
 }
 
-OAES_RET oaes_set_option(OAES_CTX* ctx,
-	OAES_OPTION option, const void* value)
+OAES_RET oaes_set_option( OAES_CTX * ctx,
+		OAES_OPTION option, const void * value )
 {
 	size_t _i;
-	oaes_ctx* _ctx = (oaes_ctx*)ctx;
-
-	if (NULL == _ctx)
+	oaes_ctx * _ctx = (oaes_ctx *) ctx;
+	
+	if( NULL == _ctx )
 		return OAES_RET_ARG1;
 
-	switch (option)
+	switch( option )
 	{
-	case OAES_OPTION_ECB:
-		_ctx->options &= ~OAES_OPTION_CBC;
-		memset(_ctx->iv, 0, OAES_BLOCK_SIZE);
-		break;
+		case OAES_OPTION_ECB:
+			_ctx->options &= ~OAES_OPTION_CBC;
+			memset( _ctx->iv, 0, OAES_BLOCK_SIZE );
+			break;
 
-	case OAES_OPTION_CBC:
-		_ctx->options &= ~OAES_OPTION_ECB;
-		if (value)
-			memcpy(_ctx->iv, value, OAES_BLOCK_SIZE);
-		else
-		{
-			for (_i = 0; _i < OAES_BLOCK_SIZE; _i++)
+		case OAES_OPTION_CBC:
+			_ctx->options &= ~OAES_OPTION_ECB;
+			if( value )
+				memcpy( _ctx->iv, value, OAES_BLOCK_SIZE );
+			else
+			{
+				for( _i = 0; _i < OAES_BLOCK_SIZE; _i++ )
 #ifdef OAES_HAVE_ISAAC
-				_ctx->iv[_i] = (uint8_t)rand(_ctx->rctx);
+					_ctx->iv[_i] = (uint8_t) rand( _ctx->rctx );
 #else
-				_ctx->iv[_i] = (uint8_t)rand();
+					_ctx->iv[_i] = (uint8_t) rand();
 #endif // OAES_HAVE_ISAAC
-		}
-		break;
+			}
+			break;
 
 #ifdef OAES_DEBUG
 
-	case OAES_OPTION_STEP_ON:
-		if (value)
-		{
-			_ctx->options &= ~OAES_OPTION_STEP_OFF;
-			_ctx->step_cb = value;
-		}
-		else
-		{
-			_ctx->options &= ~OAES_OPTION_STEP_ON;
-			_ctx->options |= OAES_OPTION_STEP_OFF;
-			_ctx->step_cb = NULL;
-			return OAES_RET_ARG3;
-		}
-		break;
+		case OAES_OPTION_STEP_ON:
+			if( value )
+			{
+				_ctx->options &= ~OAES_OPTION_STEP_OFF;
+				_ctx->step_cb = value;
+			}
+			else
+			{
+				_ctx->options &= ~OAES_OPTION_STEP_ON;
+				_ctx->options |= OAES_OPTION_STEP_OFF;
+				_ctx->step_cb = NULL;
+				return OAES_RET_ARG3;
+			}
+			break;
 
-	case OAES_OPTION_STEP_OFF:
-		_ctx->options &= ~OAES_OPTION_STEP_ON;
-		_ctx->step_cb = NULL;
-		break;
+		case OAES_OPTION_STEP_OFF:
+			_ctx->options &= ~OAES_OPTION_STEP_ON;
+			_ctx->step_cb = NULL;
+			break;
 
 #endif // OAES_DEBUG
 
-	default:
-		return OAES_RET_ARG2;
+		default:
+			return OAES_RET_ARG2;
 	}
 
 	_ctx->options |= option;
@@ -1016,116 +1016,116 @@ OAES_RET oaes_set_option(OAES_CTX* ctx,
 }
 
 static OAES_RET oaes_encrypt_block(
-	OAES_CTX* ctx, uint8_t* c, size_t c_len)
+		OAES_CTX * ctx, uint8_t * c, size_t c_len )
 {
 	size_t _i, _j;
-	oaes_ctx* _ctx = (oaes_ctx*)ctx;
-
-	if (NULL == _ctx)
+	oaes_ctx * _ctx = (oaes_ctx *) ctx;
+	
+	if( NULL == _ctx )
 		return OAES_RET_ARG1;
-
-	if (NULL == c)
+	
+	if( NULL == c )
 		return OAES_RET_ARG2;
-
-	if (c_len != OAES_BLOCK_SIZE)
+	
+	if( c_len != OAES_BLOCK_SIZE )
 		return OAES_RET_ARG3;
-
-	if (NULL == _ctx->key)
+	
+	if( NULL == _ctx->key )
 		return OAES_RET_NOKEY;
-
+	
 #ifdef OAES_DEBUG
-	if (_ctx->step_cb)
-		_ctx->step_cb(c, "input", 1, NULL);
+	if( _ctx->step_cb )
+		_ctx->step_cb( c, "input", 1, NULL );
 #endif // OAES_DEBUG
 
 	// AddRoundKey(State, K0)
-	for (_i = 0; _i < c_len; _i++)
+	for( _i = 0; _i < c_len; _i++ )
 		c[_i] = c[_i] ^ _ctx->key->exp_data[_i];
-
+	
 #ifdef OAES_DEBUG
-	if (_ctx->step_cb)
+	if( _ctx->step_cb )
 	{
-		_ctx->step_cb(_ctx->key->exp_data, "k_sch", 1, NULL);
-		_ctx->step_cb(c, "k_add", 1, NULL);
+		_ctx->step_cb( _ctx->key->exp_data, "k_sch", 1, NULL );
+		_ctx->step_cb( c, "k_add", 1, NULL );
 	}
 #endif // OAES_DEBUG
 
 	// for round = 1 step 1 to Nr–1
-	for (_i = 1; _i < _ctx->key->num_keys - 1; _i++)
+	for( _i = 1; _i < _ctx->key->num_keys - 1; _i++ )
 	{
 		// SubBytes(state)
-		for (_j = 0; _j < c_len; _j++)
-			oaes_sub_byte(c + _j);
+		for( _j = 0; _j < c_len; _j++ )
+			oaes_sub_byte( c + _j );
 
 #ifdef OAES_DEBUG
-		if (_ctx->step_cb)
-			_ctx->step_cb(c, "s_box", _i, NULL);
+		if( _ctx->step_cb )
+			_ctx->step_cb( c, "s_box", _i, NULL );
 #endif // OAES_DEBUG
 
 		// ShiftRows(state)
-		oaes_shift_rows(c);
-
+		oaes_shift_rows( c );
+		
 #ifdef OAES_DEBUG
-		if (_ctx->step_cb)
-			_ctx->step_cb(c, "s_row", _i, NULL);
+		if( _ctx->step_cb )
+			_ctx->step_cb( c, "s_row", _i, NULL );
 #endif // OAES_DEBUG
 
 		// MixColumns(state)
-		oaes_mix_cols(c);
-		oaes_mix_cols(c + 4);
-		oaes_mix_cols(c + 8);
-		oaes_mix_cols(c + 12);
-
+		oaes_mix_cols( c );
+		oaes_mix_cols( c + 4 );
+		oaes_mix_cols( c + 8 );
+		oaes_mix_cols( c + 12 );
+		
 #ifdef OAES_DEBUG
-		if (_ctx->step_cb)
-			_ctx->step_cb(c, "m_col", _i, NULL);
+		if( _ctx->step_cb )
+			_ctx->step_cb( c, "m_col", _i, NULL );
 #endif // OAES_DEBUG
 
 		// AddRoundKey(state, w[round*Nb, (round+1)*Nb-1])
-		for (_j = 0; _j < c_len; _j++)
+		for( _j = 0; _j < c_len; _j++ )
 			c[_j] = c[_j] ^
-			_ctx->key->exp_data[_i * OAES_RKEY_LEN * OAES_COL_LEN + _j];
+					_ctx->key->exp_data[_i * OAES_RKEY_LEN * OAES_COL_LEN + _j];
 
 #ifdef OAES_DEBUG
-		if (_ctx->step_cb)
-		{
-			_ctx->step_cb(_ctx->key->exp_data + _i * OAES_RKEY_LEN * OAES_COL_LEN,
-				"k_sch", _i, NULL);
-			_ctx->step_cb(c, "k_add", _i, NULL);
-		}
+	if( _ctx->step_cb )
+	{
+		_ctx->step_cb( _ctx->key->exp_data + _i * OAES_RKEY_LEN * OAES_COL_LEN,
+				"k_sch", _i, NULL );
+		_ctx->step_cb( c, "k_add", _i, NULL );
+	}
 #endif // OAES_DEBUG
 
 	}
-
+	
 	// SubBytes(state)
-	for (_i = 0; _i < c_len; _i++)
-		oaes_sub_byte(c + _i);
-
+	for( _i = 0; _i < c_len; _i++ )
+		oaes_sub_byte( c + _i );
+	
 #ifdef OAES_DEBUG
-	if (_ctx->step_cb)
-		_ctx->step_cb(c, "s_box", _ctx->key->num_keys - 1, NULL);
+	if( _ctx->step_cb )
+		_ctx->step_cb( c, "s_box", _ctx->key->num_keys - 1, NULL );
 #endif // OAES_DEBUG
 
 	// ShiftRows(state)
-	oaes_shift_rows(c);
+	oaes_shift_rows( c );
 
 #ifdef OAES_DEBUG
-	if (_ctx->step_cb)
-		_ctx->step_cb(c, "s_row", _ctx->key->num_keys - 1, NULL);
+	if( _ctx->step_cb )
+		_ctx->step_cb( c, "s_row", _ctx->key->num_keys - 1, NULL );
 #endif // OAES_DEBUG
 
 	// AddRoundKey(state, w[Nr*Nb, (Nr+1)*Nb-1])
-	for (_i = 0; _i < c_len; _i++)
+	for( _i = 0; _i < c_len; _i++ )
 		c[_i] = c[_i] ^ _ctx->key->exp_data[
-			(_ctx->key->num_keys - 1) * OAES_RKEY_LEN * OAES_COL_LEN + _i];
+				( _ctx->key->num_keys - 1 ) * OAES_RKEY_LEN * OAES_COL_LEN + _i ];
 
 #ifdef OAES_DEBUG
-	if (_ctx->step_cb)
+	if( _ctx->step_cb )
 	{
-		_ctx->step_cb(_ctx->key->exp_data +
-			(_ctx->key->num_keys - 1) * OAES_RKEY_LEN * OAES_COL_LEN,
-			"k_sch", _ctx->key->num_keys - 1, NULL);
-		_ctx->step_cb(c, "output", _ctx->key->num_keys - 1, NULL);
+		_ctx->step_cb( _ctx->key->exp_data +
+				( _ctx->key->num_keys - 1 ) * OAES_RKEY_LEN * OAES_COL_LEN,
+				"k_sch", _ctx->key->num_keys - 1, NULL );
+		_ctx->step_cb( c, "output", _ctx->key->num_keys - 1, NULL );
 	}
 #endif // OAES_DEBUG
 
@@ -1133,368 +1133,368 @@ static OAES_RET oaes_encrypt_block(
 }
 
 static OAES_RET oaes_decrypt_block(
-	OAES_CTX* ctx, uint8_t* c, size_t c_len)
+		OAES_CTX * ctx, uint8_t * c, size_t c_len )
 {
 	size_t _i, _j;
-	oaes_ctx* _ctx = (oaes_ctx*)ctx;
-
-	if (NULL == _ctx)
+	oaes_ctx * _ctx = (oaes_ctx *) ctx;
+	
+	if( NULL == _ctx )
 		return OAES_RET_ARG1;
-
-	if (NULL == c)
+	
+	if( NULL == c )
 		return OAES_RET_ARG2;
-
-	if (c_len != OAES_BLOCK_SIZE)
+	
+	if( c_len != OAES_BLOCK_SIZE )
 		return OAES_RET_ARG3;
-
-	if (NULL == _ctx->key)
+	
+	if( NULL == _ctx->key )
 		return OAES_RET_NOKEY;
-
+	
 #ifdef OAES_DEBUG
-	if (_ctx->step_cb)
-		_ctx->step_cb(c, "iinput", _ctx->key->num_keys - 1, NULL);
+	if( _ctx->step_cb )
+		_ctx->step_cb( c, "iinput", _ctx->key->num_keys - 1, NULL );
 #endif // OAES_DEBUG
 
 	// AddRoundKey(state, w[Nr*Nb, (Nr+1)*Nb-1])
-	for (_i = 0; _i < c_len; _i++)
+	for( _i = 0; _i < c_len; _i++ )
 		c[_i] = c[_i] ^ _ctx->key->exp_data[
-			(_ctx->key->num_keys - 1) * OAES_RKEY_LEN * OAES_COL_LEN + _i];
+				( _ctx->key->num_keys - 1 ) * OAES_RKEY_LEN * OAES_COL_LEN + _i ];
 
 #ifdef OAES_DEBUG
-	if (_ctx->step_cb)
+	if( _ctx->step_cb )
 	{
-		_ctx->step_cb(_ctx->key->exp_data +
-			(_ctx->key->num_keys - 1) * OAES_RKEY_LEN * OAES_COL_LEN,
-			"ik_sch", _ctx->key->num_keys - 1, NULL);
-		_ctx->step_cb(c, "ik_add", _ctx->key->num_keys - 1, NULL);
+		_ctx->step_cb( _ctx->key->exp_data +
+				( _ctx->key->num_keys - 1 ) * OAES_RKEY_LEN * OAES_COL_LEN,
+				"ik_sch", _ctx->key->num_keys - 1, NULL );
+		_ctx->step_cb( c, "ik_add", _ctx->key->num_keys - 1, NULL );
 	}
 #endif // OAES_DEBUG
 
-	for (_i = _ctx->key->num_keys - 2; _i > 0; _i--)
+	for( _i = _ctx->key->num_keys - 2; _i > 0; _i-- )
 	{
 		// InvShiftRows(state)
-		oaes_inv_shift_rows(c);
+		oaes_inv_shift_rows( c );
 
 #ifdef OAES_DEBUG
-		if (_ctx->step_cb)
-			_ctx->step_cb(c, "is_row", _i, NULL);
+	if( _ctx->step_cb )
+		_ctx->step_cb( c, "is_row", _i, NULL );
 #endif // OAES_DEBUG
 
 		// InvSubBytes(state)
-		for (_j = 0; _j < c_len; _j++)
-			oaes_inv_sub_byte(c + _j);
-
+		for( _j = 0; _j < c_len; _j++ )
+			oaes_inv_sub_byte( c + _j );
+	
 #ifdef OAES_DEBUG
-		if (_ctx->step_cb)
-			_ctx->step_cb(c, "is_box", _i, NULL);
+	if( _ctx->step_cb )
+		_ctx->step_cb( c, "is_box", _i, NULL );
 #endif // OAES_DEBUG
 
 		// AddRoundKey(state, w[round*Nb, (round+1)*Nb-1])
-		for (_j = 0; _j < c_len; _j++)
+		for( _j = 0; _j < c_len; _j++ )
 			c[_j] = c[_j] ^
-			_ctx->key->exp_data[_i * OAES_RKEY_LEN * OAES_COL_LEN + _j];
-
+					_ctx->key->exp_data[_i * OAES_RKEY_LEN * OAES_COL_LEN + _j];
+		
 #ifdef OAES_DEBUG
-		if (_ctx->step_cb)
-		{
-			_ctx->step_cb(_ctx->key->exp_data + _i * OAES_RKEY_LEN * OAES_COL_LEN,
-				"ik_sch", _i, NULL);
-			_ctx->step_cb(c, "ik_add", _i, NULL);
-		}
+	if( _ctx->step_cb )
+	{
+		_ctx->step_cb( _ctx->key->exp_data + _i * OAES_RKEY_LEN * OAES_COL_LEN,
+				"ik_sch", _i, NULL );
+		_ctx->step_cb( c, "ik_add", _i, NULL );
+	}
 #endif // OAES_DEBUG
 
 		// InvMixColums(state)
-		oaes_inv_mix_cols(c);
-		oaes_inv_mix_cols(c + 4);
-		oaes_inv_mix_cols(c + 8);
-		oaes_inv_mix_cols(c + 12);
+		oaes_inv_mix_cols( c );
+		oaes_inv_mix_cols( c + 4 );
+		oaes_inv_mix_cols( c + 8 );
+		oaes_inv_mix_cols( c + 12 );
 
 #ifdef OAES_DEBUG
-		if (_ctx->step_cb)
-			_ctx->step_cb(c, "im_col", _i, NULL);
+	if( _ctx->step_cb )
+		_ctx->step_cb( c, "im_col", _i, NULL );
 #endif // OAES_DEBUG
 
 	}
 
 	// InvShiftRows(state)
-	oaes_inv_shift_rows(c);
+	oaes_inv_shift_rows( c );
 
 #ifdef OAES_DEBUG
-	if (_ctx->step_cb)
-		_ctx->step_cb(c, "is_row", 1, NULL);
+	if( _ctx->step_cb )
+		_ctx->step_cb( c, "is_row", 1, NULL );
 #endif // OAES_DEBUG
 
 	// InvSubBytes(state)
-	for (_i = 0; _i < c_len; _i++)
-		oaes_inv_sub_byte(c + _i);
+	for( _i = 0; _i < c_len; _i++ )
+		oaes_inv_sub_byte( c + _i );
 
 #ifdef OAES_DEBUG
-	if (_ctx->step_cb)
-		_ctx->step_cb(c, "is_box", 1, NULL);
+	if( _ctx->step_cb )
+		_ctx->step_cb( c, "is_box", 1, NULL );
 #endif // OAES_DEBUG
 
 	// AddRoundKey(state, w[0, Nb-1])
-	for (_i = 0; _i < c_len; _i++)
+	for( _i = 0; _i < c_len; _i++ )
 		c[_i] = c[_i] ^ _ctx->key->exp_data[_i];
-
+	
 #ifdef OAES_DEBUG
-	if (_ctx->step_cb)
+	if( _ctx->step_cb )
 	{
-		_ctx->step_cb(_ctx->key->exp_data, "ik_sch", 1, NULL);
-		_ctx->step_cb(c, "ioutput", 1, NULL);
+		_ctx->step_cb( _ctx->key->exp_data, "ik_sch", 1, NULL );
+		_ctx->step_cb( c, "ioutput", 1, NULL );
 	}
 #endif // OAES_DEBUG
 
 	return OAES_RET_SUCCESS;
 }
 
-OAES_RET oaes_encrypt(OAES_CTX* ctx,
-	const uint8_t* m, size_t m_len, uint8_t* c, size_t* c_len)
+OAES_RET oaes_encrypt( OAES_CTX * ctx,
+		const uint8_t * m, size_t m_len, uint8_t * c, size_t * c_len )
 {
 	size_t _i, _j, _c_len_in, _c_data_len;
 	size_t _pad_len = m_len % OAES_BLOCK_SIZE == 0 ?
-		0 : OAES_BLOCK_SIZE - m_len % OAES_BLOCK_SIZE;
-	oaes_ctx* _ctx = (oaes_ctx*)ctx;
+			0 : OAES_BLOCK_SIZE - m_len % OAES_BLOCK_SIZE;
+	oaes_ctx * _ctx = (oaes_ctx *) ctx;
 	OAES_RET _rc = OAES_RET_SUCCESS;
 	uint8_t _flags = _pad_len ? OAES_FLAG_PAD : 0;
-
-	if (NULL == _ctx)
+	
+	if( NULL == _ctx )
 		return OAES_RET_ARG1;
-
-	if (NULL == m)
+	
+	if( NULL == m )
 		return OAES_RET_ARG2;
-
-	if (NULL == c_len)
+	
+	if( NULL == c_len )
 		return OAES_RET_ARG5;
-
+	
 	_c_len_in = *c_len;
 	// data + pad
 	_c_data_len = m_len + _pad_len;
 	// header + iv + data + pad
 	*c_len = 2 * OAES_BLOCK_SIZE + m_len + _pad_len;
 
-	if (NULL == c)
+	if( NULL == c )
 		return OAES_RET_SUCCESS;
-
-	if (_c_len_in < *c_len)
+	
+	if( _c_len_in < *c_len )
 		return OAES_RET_BUF;
-
-	if (NULL == _ctx->key)
+	
+	if( NULL == _ctx->key )
 		return OAES_RET_NOKEY;
-
+	
 	// header
-	memcpy(c, oaes_header, OAES_BLOCK_SIZE);
+	memcpy(c, oaes_header, OAES_BLOCK_SIZE );
 	memcpy(c + 6, &_ctx->options, sizeof(_ctx->options));
 	memcpy(c + 8, &_flags, sizeof(_flags));
 	// iv
-	memcpy(c + OAES_BLOCK_SIZE, _ctx->iv, OAES_BLOCK_SIZE);
+	memcpy(c + OAES_BLOCK_SIZE, _ctx->iv, OAES_BLOCK_SIZE );
 	// data
-	memcpy(c + 2 * OAES_BLOCK_SIZE, m, m_len);
-
-	for (_i = 0; _i < _c_data_len; _i += OAES_BLOCK_SIZE)
+	memcpy(c + 2 * OAES_BLOCK_SIZE, m, m_len );
+	
+	for( _i = 0; _i < _c_data_len; _i += OAES_BLOCK_SIZE )
 	{
 		uint8_t _block[OAES_BLOCK_SIZE];
-		size_t _block_size = min(m_len - _i, OAES_BLOCK_SIZE);
+		size_t _block_size = min( m_len - _i, OAES_BLOCK_SIZE );
 
-		memcpy(_block, c + 2 * OAES_BLOCK_SIZE + _i, _block_size);
-
+		memcpy( _block, c + 2 * OAES_BLOCK_SIZE + _i, _block_size );
+		
 		// insert pad
-		for (_j = 0; _j < OAES_BLOCK_SIZE - _block_size; _j++)
-			_block[_block_size + _j] = _j + 1;
-
+		for( _j = 0; _j < OAES_BLOCK_SIZE - _block_size; _j++ )
+			_block[ _block_size + _j ] = _j + 1;
+	
 		// CBC
-		if (_ctx->options & OAES_OPTION_CBC)
+		if( _ctx->options & OAES_OPTION_CBC )
 		{
-			for (_j = 0; _j < OAES_BLOCK_SIZE; _j++)
+			for( _j = 0; _j < OAES_BLOCK_SIZE; _j++ )
 				_block[_j] = _block[_j] ^ _ctx->iv[_j];
 		}
 
 		_rc = _rc ||
-			oaes_encrypt_block(ctx, _block, OAES_BLOCK_SIZE);
-		memcpy(c + 2 * OAES_BLOCK_SIZE + _i, _block, OAES_BLOCK_SIZE);
-
-		if (_ctx->options & OAES_OPTION_CBC)
-			memcpy(_ctx->iv, _block, OAES_BLOCK_SIZE);
+				oaes_encrypt_block( ctx, _block, OAES_BLOCK_SIZE );
+		memcpy( c + 2 * OAES_BLOCK_SIZE + _i, _block, OAES_BLOCK_SIZE );
+		
+		if( _ctx->options & OAES_OPTION_CBC )
+			memcpy( _ctx->iv, _block, OAES_BLOCK_SIZE );
 	}
-
+	
 	return _rc;
 }
 
-OAES_RET oaes_decrypt(OAES_CTX* ctx,
-	const uint8_t* c, size_t c_len, uint8_t* m, size_t* m_len)
+OAES_RET oaes_decrypt( OAES_CTX * ctx,
+		const uint8_t * c, size_t c_len, uint8_t * m, size_t * m_len )
 {
 	size_t _i, _j, _m_len_in;
-	oaes_ctx* _ctx = (oaes_ctx*)ctx;
+	oaes_ctx * _ctx = (oaes_ctx *) ctx;
 	OAES_RET _rc = OAES_RET_SUCCESS;
 	uint8_t _iv[OAES_BLOCK_SIZE];
 	uint8_t _flags;
 	OAES_OPTION _options;
-
-	if (NULL == ctx)
+	
+	if( NULL == ctx )
 		return OAES_RET_ARG1;
-
-	if (NULL == c)
+	
+	if( NULL == c )
 		return OAES_RET_ARG2;
-
-	if (c_len % OAES_BLOCK_SIZE)
+	
+	if( c_len % OAES_BLOCK_SIZE )
 		return OAES_RET_ARG3;
-
-	if (NULL == m_len)
+	
+	if( NULL == m_len )
 		return OAES_RET_ARG5;
-
+	
 	_m_len_in = *m_len;
 	*m_len = c_len - 2 * OAES_BLOCK_SIZE;
-
-	if (NULL == m)
+	
+	if( NULL == m )
 		return OAES_RET_SUCCESS;
-
-	if (_m_len_in < *m_len)
+	
+	if( _m_len_in < *m_len )
 		return OAES_RET_BUF;
-
-	if (NULL == _ctx->key)
+	
+	if( NULL == _ctx->key )
 		return OAES_RET_NOKEY;
-
+	
 	// header
-	if (0 != memcmp(c, oaes_header, 4))
+	if( 0 != memcmp( c, oaes_header, 4 ) )
 		return OAES_RET_HEADER;
 
 	// header version
-	switch (c[4])
+	switch( c[4] )
 	{
-	case 0x01:
-		break;
-	default:
-		return OAES_RET_HEADER;
+		case 0x01:
+			break;
+		default:
+			return OAES_RET_HEADER;
 	}
-
+	
 	// header type
-	switch (c[5])
+	switch( c[5] )
 	{
-	case 0x02:
-		break;
-	default:
-		return OAES_RET_HEADER;
+		case 0x02:
+			break;
+		default:
+			return OAES_RET_HEADER;
 	}
-
+	
 	// options
 	memcpy(&_options, c + 6, sizeof(_options));
 	// validate that all options are valid
-	if (_options & ~(
-		OAES_OPTION_ECB
-		| OAES_OPTION_CBC
+	if( _options & ~(
+			  OAES_OPTION_ECB
+			| OAES_OPTION_CBC
 #ifdef OAES_DEBUG
-		| OAES_OPTION_STEP_ON
-		| OAES_OPTION_STEP_OFF
+			| OAES_OPTION_STEP_ON
+			| OAES_OPTION_STEP_OFF
 #endif // OAES_DEBUG
-		))
+			) )
 		return OAES_RET_HEADER;
-	if ((_options & OAES_OPTION_ECB) &&
-		(_options & OAES_OPTION_CBC))
+	if( ( _options & OAES_OPTION_ECB ) &&
+			( _options & OAES_OPTION_CBC ) )
 		return OAES_RET_HEADER;
-	if (_options == OAES_OPTION_NONE)
+	if( _options == OAES_OPTION_NONE )
 		return OAES_RET_HEADER;
-
+	
 	// flags
 	memcpy(&_flags, c + 8, sizeof(_flags));
 	// validate that all flags are valid
-	if (_flags & ~(
-		OAES_FLAG_PAD
-		))
+	if( _flags & ~(
+			  OAES_FLAG_PAD
+			) )
 		return OAES_RET_HEADER;
 
 	// iv
-	memcpy(_iv, c + OAES_BLOCK_SIZE, OAES_BLOCK_SIZE);
+	memcpy( _iv, c + OAES_BLOCK_SIZE, OAES_BLOCK_SIZE);
 	// data + pad
-	memcpy(m, c + 2 * OAES_BLOCK_SIZE, *m_len);
-
-	for (_i = 0; _i < *m_len; _i += OAES_BLOCK_SIZE)
+	memcpy( m, c + 2 * OAES_BLOCK_SIZE, *m_len );
+	
+	for( _i = 0; _i < *m_len; _i += OAES_BLOCK_SIZE )
 	{
-		if ((_options & OAES_OPTION_CBC) && _i > 0)
-			memcpy(_iv, c + OAES_BLOCK_SIZE + _i, OAES_BLOCK_SIZE);
-
+		if( ( _options & OAES_OPTION_CBC ) && _i > 0 )
+			memcpy( _iv, c + OAES_BLOCK_SIZE + _i, OAES_BLOCK_SIZE );
+		
 		_rc = _rc ||
-			oaes_decrypt_block(ctx, m + _i, min(*m_len - _i, OAES_BLOCK_SIZE));
-
+				oaes_decrypt_block( ctx, m + _i, min( *m_len - _i, OAES_BLOCK_SIZE ) );
+		
 		// CBC
-		if (_options & OAES_OPTION_CBC)
+		if( _options & OAES_OPTION_CBC )
 		{
-			for (_j = 0; _j < OAES_BLOCK_SIZE; _j++)
-				m[_i + _j] = m[_i + _j] ^ _iv[_j];
+			for( _j = 0; _j < OAES_BLOCK_SIZE; _j++ )
+				m[ _i + _j ] = m[ _i + _j ] ^ _iv[_j];
 		}
 	}
-
+	
 	// remove pad
-	if (_flags & OAES_FLAG_PAD)
+	if( _flags & OAES_FLAG_PAD )
 	{
 		int _is_pad = 1;
-		size_t _temp = (size_t)m[*m_len - 1];
+		size_t _temp = (size_t) m[*m_len - 1];
 
-		if (_temp <= 0x00 || _temp > 0x0f)
+		if( _temp  <= 0x00 || _temp > 0x0f )
 			return OAES_RET_HEADER;
-		for (_i = 0; _i < _temp; _i++)
-			if (m[*m_len - 1 - _i] != _temp - _i)
+		for( _i = 0; _i < _temp; _i++ )
+			if( m[*m_len - 1 - _i] != _temp - _i )
 				_is_pad = 0;
-		if (_is_pad)
+		if( _is_pad )
 		{
-			memset(m + *m_len - _temp, 0, _temp);
+			memset( m + *m_len - _temp, 0, _temp );
 			*m_len -= _temp;
 		}
 		else
 			return OAES_RET_HEADER;
 	}
-
+	
 	return OAES_RET_SUCCESS;
 }
 
 
-OAES_API OAES_RET oaes_encryption_round(const uint8_t* key, uint8_t* c)
+OAES_API OAES_RET oaes_encryption_round( const uint8_t * key, uint8_t * c )
 {
-	size_t _i;
+  size_t _i;
 
-	if (NULL == key)
-		return OAES_RET_ARG1;
+  if( NULL == key )
+    return OAES_RET_ARG1;
 
-	if (NULL == c)
-		return OAES_RET_ARG2;
+  if( NULL == c )
+    return OAES_RET_ARG2;
 
-	// SubBytes(state)
-	for (_i = 0; _i < OAES_BLOCK_SIZE; _i++)
-		oaes_sub_byte(c + _i);
+  // SubBytes(state)
+  for( _i = 0; _i < OAES_BLOCK_SIZE; _i++ )
+    oaes_sub_byte( c + _i );
 
-	// ShiftRows(state)
-	oaes_shift_rows(c);
+  // ShiftRows(state)
+  oaes_shift_rows( c );
 
-	// MixColumns(state)
-	oaes_mix_cols(c);
-	oaes_mix_cols(c + 4);
-	oaes_mix_cols(c + 8);
-	oaes_mix_cols(c + 12);
+  // MixColumns(state)
+  oaes_mix_cols( c );
+  oaes_mix_cols( c + 4 );
+  oaes_mix_cols( c + 8 );
+  oaes_mix_cols( c + 12 );
 
-	// AddRoundKey(State, key)
-	for (_i = 0; _i < OAES_BLOCK_SIZE; _i++)
-		c[_i] ^= key[_i];
+  // AddRoundKey(State, key)
+  for( _i = 0; _i < OAES_BLOCK_SIZE; _i++ )
+    c[_i] ^= key[_i];
 
-	return OAES_RET_SUCCESS;
+  return OAES_RET_SUCCESS;
 }
 
-OAES_API OAES_RET oaes_pseudo_encrypt_ecb(OAES_CTX* ctx, uint8_t* c)
+OAES_API OAES_RET oaes_pseudo_encrypt_ecb( OAES_CTX * ctx, uint8_t * c )
 {
-	size_t _i;
-	oaes_ctx* _ctx = (oaes_ctx*)ctx;
+  size_t _i;
+  oaes_ctx * _ctx = (oaes_ctx *) ctx;
 
-	if (NULL == _ctx)
-		return OAES_RET_ARG1;
+  if( NULL == _ctx )
+    return OAES_RET_ARG1;
 
-	if (NULL == c)
-		return OAES_RET_ARG2;
+  if( NULL == c )
+    return OAES_RET_ARG2;
 
-	if (NULL == _ctx->key)
-		return OAES_RET_NOKEY;
+  if( NULL == _ctx->key )
+    return OAES_RET_NOKEY;
 
-	for (_i = 0; _i < 10; ++_i)
-	{
-		oaes_encryption_round(&_ctx->key->exp_data[_i * OAES_RKEY_LEN * OAES_COL_LEN], c);
-	}
+  for ( _i = 0; _i < 10; ++_i )
+  {
+    oaes_encryption_round( &_ctx->key->exp_data[_i * OAES_RKEY_LEN * OAES_COL_LEN], c );
+  }
 
-	return OAES_RET_SUCCESS;
+  return OAES_RET_SUCCESS;
 }

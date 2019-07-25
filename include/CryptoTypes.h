@@ -19,42 +19,58 @@ namespace Crypto
     {
         /* Can't have constructors here, because it violates std::is_pod<>
            which is used somewhere */
-        bool operator==(const Hash & other) const {
-            return std::equal(std::begin(data), std::end(data),
-                              std::begin(other.data));
-        } bool operator!=(const Hash & other) const {
+        bool operator==(const Hash &other) const
+        {
+            return std::equal(std::begin(data), std::end(data), std::begin(other.data));
+        }
+
+        bool operator!=(const Hash &other) const
+        {
             return !(*this == other);
         }
 
         uint8_t data[32];
     };
 
-    struct PublicKey {
-        PublicKey() {
-        } PublicKey(std::initializer_list < uint8_t > input) {
+    struct PublicKey
+    {
+        PublicKey() {}
+
+        PublicKey(std::initializer_list<uint8_t> input)
+        {
             std::copy(input.begin(), input.end(), std::begin(data));
-        } PublicKey(const uint8_t input[32]) {
-            std::copy(input, input + 32, std::begin(data));
         }
 
-        bool operator==(const PublicKey & other) const {
-            return std::equal(std::begin(data), std::end(data),
-                              std::begin(other.data));
-        } bool operator!=(const PublicKey & other) const {
+        PublicKey(const uint8_t input[32])
+        {
+            std::copy(input, input+32, std::begin(data));
+        }
+
+        bool operator==(const PublicKey &other) const
+        {
+            return std::equal(std::begin(data), std::end(data), std::begin(other.data));
+        }
+
+        bool operator!=(const PublicKey &other) const
+        {
             return !(*this == other);
         }
 
         uint8_t data[32];
     };
 
-    struct SecretKey {
-        SecretKey() {
-        } SecretKey(std::initializer_list < uint8_t > input) {
+    struct SecretKey
+    {
+        SecretKey() {}
+
+        SecretKey(std::initializer_list<uint8_t> input)
+        {
             std::copy(input.begin(), input.end(), std::begin(data));
         }
 
-        SecretKey(const uint8_t input[32]) {
-            std::copy(input, input + 32, std::begin(data));
+        SecretKey(const uint8_t input[32])
+        {
+            std::copy(input, input+32, std::begin(data));
         }
 
         bool operator==(const SecretKey &other) const
@@ -70,58 +86,85 @@ namespace Crypto
         uint8_t data[32];
     };
 
-    struct KeyDerivation {
-        KeyDerivation() {
-        } KeyDerivation(std::initializer_list < uint8_t > input) {
+    struct KeyDerivation
+    {
+        KeyDerivation() {}
+
+        KeyDerivation(std::initializer_list<uint8_t> input)
+        {
             std::copy(input.begin(), input.end(), std::begin(data));
         }
 
-        KeyDerivation(const uint8_t input[32]) {
-            std::copy(input, input + 32, std::begin(data));
+        KeyDerivation(const uint8_t input[32])
+        {
+            std::copy(input, input+32, std::begin(data));
         }
 
-        bool operator==(const KeyDerivation & other) const {
-            return std::equal(std::begin(data), std::end(data),
-                              std::begin(other.data));
-        } bool operator!=(const KeyDerivation & other) const {
+        bool operator==(const KeyDerivation &other) const
+        {
+            return std::equal(std::begin(data), std::end(data), std::begin(other.data));
+        }
+
+        bool operator!=(const KeyDerivation &other) const
+        {
             return !(*this == other);
-        } uint8_t data[32];
+        }
+
+        uint8_t data[32];
     };
 
-    struct KeyImage {
-        KeyImage() {
-        } KeyImage(std::initializer_list < uint8_t > input) {
+    struct KeyImage
+    {
+        KeyImage() {}
+
+        KeyImage(std::initializer_list<uint8_t> input)
+        {
             std::copy(input.begin(), input.end(), std::begin(data));
         }
 
-        KeyImage(const uint8_t input[32]) {
-            std::copy(input, input + 32, std::begin(data));
+        KeyImage(const uint8_t input[32])
+        {
+            std::copy(input, input+32, std::begin(data));
         }
 
-        bool operator==(const KeyImage & other) const {
-            return std::equal(std::begin(data), std::end(data),
-                              std::begin(other.data));
-        } bool operator!=(const KeyImage & other) const {
+        bool operator==(const KeyImage &other) const
+        {
+            return std::equal(std::begin(data), std::end(data), std::begin(other.data));
+        }
+
+        bool operator!=(const KeyImage &other) const
+        {
             return !(*this == other);
-        } uint8_t data[32];
+        }
+
+        uint8_t data[32];
     };
 
-    struct Signature {
-        Signature() {
-        } Signature(std::initializer_list < uint8_t > input) {
+    struct Signature
+    {
+        Signature() {}
+
+        Signature(std::initializer_list<uint8_t> input)
+        {
             std::copy(input.begin(), input.end(), std::begin(data));
         }
 
-        Signature(const uint8_t input[64]) {
-            std::copy(input, input + 64, std::begin(data));
+        Signature(const uint8_t input[64])
+        {
+            std::copy(input, input+64, std::begin(data));
         }
 
-        bool operator==(const Signature & other) const {
-            return std::equal(std::begin(data), std::end(data),
-                              std::begin(other.data));
-        } bool operator!=(const Signature & other) const {
+        bool operator==(const Signature &other) const
+        {
+            return std::equal(std::begin(data), std::end(data), std::begin(other.data));
+        }
+
+        bool operator!=(const Signature &other) const
+        {
             return !(*this == other);
-        } uint8_t data[64];
+        }
+
+        uint8_t data[64];
     };
 
     /* For boost hash_value */
@@ -151,32 +194,48 @@ namespace Crypto
     }
 }
 
-namespace std {
+namespace std
+{
     /* For using in std::unordered_* containers */
-    template <> struct hash <Crypto::Hash > {
-        size_t operator () (const Crypto::Hash & hash) const {
-            return reinterpret_cast < const size_t & >(hash);
-    }};
+    template<> struct hash<Crypto::Hash>
+    {
+        size_t operator()(const Crypto::Hash &hash) const
+        {
+            return reinterpret_cast<const size_t &>(hash);
+        }
+    };
 
-     template <> struct hash <Crypto::PublicKey > {
-        size_t operator () (const Crypto::PublicKey & publicKey) const {
-            return reinterpret_cast < const size_t & >(publicKey);
-    }};
+    template<> struct hash<Crypto::PublicKey>
+    {
+        size_t operator()(const Crypto::PublicKey &publicKey) const
+        {
+            return reinterpret_cast<const size_t &>(publicKey);
+        }
+    };
 
-     template <> struct hash <Crypto::SecretKey > {
-        size_t operator () (const Crypto::SecretKey & secretKey) const {
-            return reinterpret_cast < const size_t & >(secretKey);
-    }};
+    template<> struct hash<Crypto::SecretKey>
+    {
+        size_t operator()(const Crypto::SecretKey &secretKey) const
+        {
+            return reinterpret_cast<const size_t &>(secretKey);
+        }
+    };
 
-     template <> struct hash <Crypto::KeyDerivation > {
-        size_t operator () (const Crypto::KeyDerivation & keyDerivation) const {
-            return reinterpret_cast < const size_t & >(keyDerivation);
-    }};
+    template<> struct hash<Crypto::KeyDerivation>
+    {
+        size_t operator()(const Crypto::KeyDerivation &keyDerivation) const
+        {
+            return reinterpret_cast<const size_t &>(keyDerivation);
+        }
+    };
 
-     template <> struct hash <Crypto::KeyImage > {
-        size_t operator () (const Crypto::KeyImage & keyImage) const {
-            return reinterpret_cast < const size_t & >(keyImage);
-    }};
+    template<> struct hash<Crypto::KeyImage>
+    {
+        size_t operator()(const Crypto::KeyImage &keyImage) const
+        {
+            return reinterpret_cast<const size_t &>(keyImage);
+        }
+    };
 
     template<> struct hash<Crypto::Signature>
     {

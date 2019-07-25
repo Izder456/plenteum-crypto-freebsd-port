@@ -1,10 +1,9 @@
 # Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
 # Copyright (c) 2018-2019, The TurtleCoin Developers
-# Copyright (c) 2018-2019, The Plenteum Developers
 #
 # Please see the included LICENSE file for more information.
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.8)
 
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
@@ -14,7 +13,7 @@ endif()
 
 set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build, options are: Debug, Release, RelWithDebInfo")
 set(CMAKE_CONFIGURATION_TYPES Debug RelWithDebInfo Release CACHE TYPE INTERNAL)
-set(ARCH native CACHE STRING "CPU to build for: -march value or default")
+set(ARCH default CACHE STRING "CPU to build for: -march value or default")
 
 project(plenteum-crypto)
 
@@ -37,6 +36,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Set up options
 option(BUILD_JS "Compile to native Javascript" OFF)
 option(BUILD_WASM "Compile to WASM" OFF)
+option(JS_HASHFUNCTIONS "Compile JS or WASM with Hash Functions" OFF)
 
 if(BUILD_JS AND BUILD_WASM)
   message(FATAL_ERROR "You may only specify either BUILD_JS or BUILD_WASM at a single time")

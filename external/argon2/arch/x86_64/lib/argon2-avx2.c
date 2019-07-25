@@ -1,7 +1,6 @@
 #include "argon2-avx2.h"
 
-#ifdef __AVX2__
-#pragma message ("info: ACTIVATING AVX2 in argon2-avx2.c")
+#ifdef HAVE_AVX2
 #include <string.h>
 
 #include <immintrin.h>

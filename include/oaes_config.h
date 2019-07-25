@@ -46,4 +46,5 @@ extern "C" {
 #ifdef __cplusplus 
 }
 #endif
-#endif                          // _OAES_CONFIG_H
+
+#endif // _OAES_CONFIG_H

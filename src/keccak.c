@@ -34,18 +34,15 @@ const int keccakf_piln[24] =
 void keccakf(uint64_t st[25], int rounds)
 {
     int i, j, round;
-
     uint64_t t, bc[5];
 
-    for (round = 0; round < rounds; round++)
-    {
+    for (round = 0; round < rounds; round++) {
 
         // Theta
         for (i = 0; i < 5; i++)     
             bc[i] = st[i] ^ st[i + 5] ^ st[i + 10] ^ st[i + 15] ^ st[i + 20];
 
-        for (i = 0; i < 5; i++)
-        {
+        for (i = 0; i < 5; i++) {
             t = bc[(i + 4) % 5] ^ ROTL64(bc[(i + 1) % 5], 1);
             for (j = 0; j < 25; j += 5)
                 st[j + i] ^= t;
@@ -53,8 +50,7 @@ void keccakf(uint64_t st[25], int rounds)
 
         // Rho Pi
         t = st[1];
-        for (i = 0; i < 24; i++)
-        {
+        for (i = 0; i < 24; i++) {
             j = keccakf_piln[i];
             bc[0] = st[j];
             st[j] = ROTL64(t, keccakf_rotc[i]);
@@ -62,8 +58,7 @@ void keccakf(uint64_t st[25], int rounds)
         }
 
         //  Chi
-        for (j = 0; j < 25; j += 5)
-        {
+        for (j = 0; j < 25; j += 5) {
             for (i = 0; i < 5; i++)
                 bc[i] = st[j + i];
             for (i = 0; i < 5; i++)
@@ -78,12 +73,10 @@ void keccakf(uint64_t st[25], int rounds)
 // compute a keccak hash (md) of given byte length from "in"
 typedef uint64_t state_t[25];
 
-int keccak(const uint8_t * in, int inlen, uint8_t * md, int mdlen)
+int keccak(const uint8_t *in, int inlen, uint8_t *md, int mdlen)
 {
     state_t st;
-
     uint8_t temp[144];
-
     int i, rsiz, rsizw;
 
 
@@ -98,8 +91,7 @@ int keccak(const uint8_t * in, int inlen, uint8_t * md, int mdlen)
     
     memset(st, 0, sizeof(st));
 
-    for (; inlen >= rsiz; inlen -= rsiz, in += rsiz)
-    {
+    for ( ; inlen >= rsiz; inlen -= rsiz, in += rsiz) {
         for (i = 0; i < rsizw; i++)
             st[i] ^= ((uint64_t *) in)[i];
         keccakf(st, KECCAK_ROUNDS);
@@ -121,7 +113,7 @@ int keccak(const uint8_t * in, int inlen, uint8_t * md, int mdlen)
     return 0;
 }
 
-void keccak1600(const uint8_t * in, int inlen, uint8_t * md)
+void keccak1600(const uint8_t *in, int inlen, uint8_t *md)
 {
     keccak(in, inlen, md, sizeof(state_t));
 }
